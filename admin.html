@@ -1,0 +1,647 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Iniciar sesión | Il Salone Lia Vincenzo</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Montserrat:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="estilos.css" />
+  </head>
+  <body class="admin-body">
+    <main class="admin-shell">
+      <section class="admin-login" id="loginView">
+        <div class="text-center mb-4">
+          <a class="brand text-decoration-none" href="index.html"
+            >IL SALONE<small>LIA VINCENZO</small></a
+          >
+          <p class="mt-4 mb-0">Iniciar sesión</p>
+        </div>
+        <form id="adminLogin" class="form-wrap" novalidate>
+          <label class="form-label" for="adminUser">Usuario</label
+          ><input
+            class="form-control mb-3"
+            id="adminUser"
+            required
+            autocomplete="username"
+            placeholder="Ingresa tu usuario"
+          />
+          <label class="form-label" for="adminPassword">Contraseña</label
+          ><input
+            class="form-control mb-4"
+            type="password"
+            id="adminPassword"
+            required
+            autocomplete="current-password"
+            placeholder="Ingresa tu contraseña"
+          />
+          <p class="small text-danger" id="loginError"></p>
+          <button class="btn btn-gold w-100" type="submit">
+            Ingresar al panel
+          </button>
+        </form>
+      </section>
+
+      <section class="admin-dashboard d-none" id="dashboardView">
+        <aside class="admin-sidebar">
+          <a class="brand text-decoration-none" href="index.html"
+            >IL SALONE<small>LIA VINCENZO</small></a
+          >
+          <a class="active" href="#dashboard"
+            ><i class="fa-solid fa-chart-line"></i> Dashboard</a
+          >
+          <a href="#clients"><i class="fa-solid fa-users"></i> Clientes</a>
+          <a href="#services"><i class="fa-solid fa-spa"></i> Servicios</a>
+          <a href="#dresses"><i class="fa-solid fa-shirt"></i> Vestidos</a>
+          <a href="#reservations"
+            ><i class="fa-regular fa-calendar-check"></i> Reservas</a
+          >
+          <a href="#payments"><i class="fa-solid fa-wallet"></i> Pagos</a>
+          <a href="#users"><i class="fa-solid fa-user-gear"></i> Usuarios</a>
+          <a href="index.html"
+            ><i class="fa-solid fa-arrow-left"></i> Ver sitio web</a
+          >
+          <button class="admin-logout" id="logoutButton">
+            <i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión
+          </button>
+        </aside>
+        <div class="admin-content">
+          <header
+            class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4"
+            id="dashboard"
+          >
+            <div>
+              <span class="eyebrow">Panel administrativo</span>
+              <h1>Resumen general</h1>
+            </div>
+            <span class="availability">Sesión activa</span>
+          </header>
+          <div class="row g-3">
+            <div class="col-sm-6 col-xl-4">
+              <article class="admin-stat">
+                <i class="fa-solid fa-users"></i><strong>128</strong
+                ><span>Total de clientes</span>
+              </article>
+            </div>
+            <div class="col-sm-6 col-xl-4">
+              <article class="admin-stat">
+                <i class="fa-regular fa-calendar-check"></i><strong>36</strong
+                ><span>Total de reservas</span>
+              </article>
+            </div>
+            <div class="col-sm-6 col-xl-4">
+              <article class="admin-stat">
+                <i class="fa-regular fa-clock"></i><strong>12</strong
+                ><span>Reservas del día</span>
+              </article>
+            </div>
+            <div class="col-sm-6 col-xl-4">
+              <article class="admin-stat">
+                <i class="fa-solid fa-shirt"></i><strong>28</strong
+                ><span>Vestidos disponibles</span>
+              </article>
+            </div>
+            <div class="col-sm-6 col-xl-4">
+              <article class="admin-stat">
+                <i class="fa-solid fa-spa"></i><strong>18</strong
+                ><span>Servicios registrados</span>
+              </article>
+            </div>
+            <div class="col-sm-6 col-xl-4">
+              <article class="admin-stat">
+                <i class="fa-solid fa-heart"></i
+                ><strong id="favoriteTotal">0</strong
+                ><span>Favoritos registrados</span>
+              </article>
+            </div>
+          </div>
+
+          <section class="admin-panel mt-4" id="clients">
+            <div class="admin-section-title">
+              <div>
+                <span class="eyebrow">Gestión de clientes</span>
+                <h2>Clientes</h2>
+              </div>
+              <button
+                class="btn btn-gold admin-action"
+                data-action="Registrar cliente"
+              >
+                <i class="fa-solid fa-plus me-1"></i>Registrar
+              </button>
+            </div>
+            <div class="admin-tools">
+              <input class="form-control" placeholder="Buscar cliente" /><button
+                class="btn btn-outline-gold admin-action"
+                data-action="Editar cliente"
+              >
+                Editar</button
+              ><button
+                class="btn btn-outline-gold admin-action"
+                data-action="Eliminar cliente"
+              >
+                Eliminar
+              </button>
+            </div>
+            <p class="admin-feedback"></p>
+          </section>
+          <section class="admin-panel mt-4" id="services">
+            <div class="admin-section-title">
+              <div>
+                <span class="eyebrow">Gestión de servicios</span>
+                <h2>Servicios</h2>
+              </div>
+              <button
+                class="btn btn-gold admin-action"
+                data-action="Registrar servicio"
+              >
+                Registrar servicio
+              </button>
+            </div>
+            <div class="admin-tools">
+              <button
+                class="btn btn-outline-gold admin-action"
+                data-action="Modificar precios"
+              >
+                Modificar precios</button
+              ><button
+                class="btn btn-outline-gold admin-action"
+                data-action="Editar descripción"
+              >
+                Editar descripción</button
+              ><button
+                class="btn btn-outline-gold admin-action"
+                data-action="Eliminar servicio"
+              >
+                Eliminar servicio
+              </button>
+            </div>
+            <p class="admin-feedback"></p>
+          </section>
+          <section class="admin-panel mt-4" id="dresses">
+            <div class="admin-section-title">
+              <div>
+                <span class="eyebrow">Gestión de vestidos</span>
+                <h2>Vestidos</h2>
+              </div>
+              <button
+                class="btn btn-gold admin-action"
+                data-action="Registrar vestido"
+              >
+                Registrar vestido
+              </button>
+            </div>
+            <div class="admin-tools">
+              <button
+                class="btn btn-outline-gold admin-action"
+                data-action="Subir fotografía"
+              >
+                Subir fotografías</button
+              ><button
+                class="btn btn-outline-gold admin-action"
+                data-action="Cambiar disponibilidad"
+              >
+                Cambiar disponibilidad</button
+              ><button
+                class="btn btn-outline-gold admin-action"
+                data-action="Editar vestido"
+              >
+                Editar información</button
+              ><button
+                class="btn btn-outline-gold admin-action"
+                data-action="Eliminar vestido"
+              >
+                Eliminar vestido
+              </button>
+            </div>
+            <p class="admin-feedback"></p>
+          </section>
+          <section class="admin-panel mt-4" id="reservations">
+            <div class="admin-section-title">
+              <div>
+                <span class="eyebrow">Gestión de reservas</span>
+                <h2>Reservas</h2>
+              </div>
+              <button
+                class="btn btn-gold admin-action"
+                data-action="Registrar reserva"
+              >
+                Registrar reserva
+              </button>
+            </div>
+            <div class="admin-tools">
+              <button
+                class="btn btn-outline-gold admin-action"
+                data-action="Cambiar horario"
+              >
+                Cambiar horarios</button
+              ><button
+                class="btn btn-outline-gold admin-action"
+                data-action="Confirmar reserva"
+              >
+                Confirmar reserva</button
+              ><button
+                class="btn btn-outline-gold admin-action"
+                data-action="Cancelar reserva"
+              >
+                Cancelar reserva
+              </button>
+            </div>
+            <p class="admin-feedback"></p>
+          </section>
+          <section class="admin-panel mt-4" id="payments">
+            <div class="admin-section-title">
+              <div>
+                <span class="eyebrow">Gestión de pagos</span>
+                <h2>Pagos</h2>
+              </div>
+              <button
+                class="btn btn-gold admin-action"
+                data-action="Registrar anticipo"
+              >
+                Registrar anticipo
+              </button>
+            </div>
+            <div class="admin-tools">
+              <button
+                class="btn btn-outline-gold admin-action"
+                data-action="Registrar pago"
+              >
+                Registrar pago</button
+              ><button
+                class="btn btn-outline-gold admin-action"
+                data-action="Ver historial de pagos"
+              >
+                Ver historial de pagos
+              </button>
+            </div>
+            <p class="admin-feedback"></p>
+          </section>
+          <section class="admin-panel mt-4" id="users">
+            <div class="admin-section-title">
+              <div>
+                <span class="eyebrow">Gestión de usuarios</span>
+                <h2>Usuarios administradores</h2>
+              </div>
+              <button
+                class="btn btn-gold admin-action"
+                data-action="Registrar usuario"
+              >
+                Registrar usuario
+              </button>
+            </div>
+            <div class="admin-tools">
+              <button
+                class="btn btn-outline-gold admin-action"
+                data-action="Editar usuario"
+              >
+                Editar usuario</button
+              ><button
+                class="btn btn-outline-gold admin-action"
+                data-action="Eliminar usuario"
+              >
+                Eliminar usuario
+              </button>
+            </div>
+            <p class="admin-feedback"></p>
+          </section>
+        </div>
+      </section>
+    </main>
+    <script>
+      (() => {
+        sessionStorage.removeItem("ilSaloneAdmin");
+        let token = null;
+        const login = document.querySelector("#adminLogin");
+        const errorBox = document.querySelector("#loginError");
+        const dashboard = document.querySelector("#dashboardView");
+        const access = async (url) => {
+          const response = await fetch(url, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const data = await response.json();
+          if (!response.ok)
+            throw new Error(data.error || "No se pudo cargar la información.");
+          return data;
+        };
+        login.addEventListener(
+          "submit",
+          async (event) => {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            errorBox.textContent = "";
+            if (window.location.protocol === "file:") {
+              errorBox.textContent =
+                "Abre el panel desde http://localhost:3000/admin.html con el servidor iniciado; file:/// no puede conectarse a la base de datos.";
+              return;
+            }
+            if (!login.checkValidity()) {
+              login.classList.add("was-validated");
+              return;
+            }
+            try {
+              const response = await fetch("/api/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  usuario: document.querySelector("#adminUser").value,
+                  contrasena: document.querySelector("#adminPassword").value,
+                }),
+              });
+              const data = await response.json();
+              if (!response.ok)
+                throw new Error(data.error || "No se pudo iniciar sesión.");
+              token = data.token;
+              window.ilSaloneAdminToken = token;
+              window.dispatchEvent(new Event("admin-authenticated"));
+              document.querySelector("#loginView").classList.add("d-none");
+              dashboard.classList.remove("d-none");
+              const stats = await access("/api/dashboard");
+              document
+                .querySelectorAll(".admin-stat strong")
+                .forEach((item, index) => {
+                  const values = [
+                    stats.clientes,
+                    stats.reservas,
+                    stats.reservasHoy,
+                    stats.vestidos,
+                    stats.servicios,
+                    JSON.parse(
+                      localStorage.getItem("ilSaloneFavorites") || "[]",
+                    ).length,
+                  ];
+                  item.textContent = values[index] ?? 0;
+                });
+            } catch (error) {
+              errorBox.textContent =
+                error instanceof TypeError
+                  ? "No se pudo conectar al servidor. Ejecuta npm start y abre http://localhost:3000/admin.html."
+                  : error.message;
+            }
+          },
+          true,
+        );
+        document.querySelector("#logoutButton").addEventListener(
+          "click",
+          (event) => {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            token = null;
+            window.ilSaloneAdminToken = null;
+            dashboard.classList.add("d-none");
+            document.querySelector("#loginView").classList.remove("d-none");
+            login.reset();
+          },
+          true,
+        );
+      })();
+    </script>
+    <script>
+      (() => {
+        const content = document.querySelector(".admin-content");
+        const overviewHeader = content.querySelector("header");
+        const overviewStats = overviewHeader.nextElementSibling;
+        const overview = document.createElement("div");
+        overview.className = "admin-overview";
+        overviewHeader.before(overview);
+        overview.append(overviewHeader, overviewStats);
+        const panels = [...document.querySelectorAll(".admin-panel")];
+        const links = [
+          ...document.querySelectorAll('.admin-sidebar a[href^="#"]'),
+        ];
+        const showSection = (id) => {
+          const dashboard = id === "dashboard";
+          overview.classList.toggle("is-hidden", !dashboard);
+          panels.forEach((panel) =>
+            panel.classList.toggle("is-active", panel.id === id),
+          );
+          links.forEach((link) =>
+            link.classList.toggle(
+              "active",
+              link.getAttribute("href") === `#${id}`,
+            ),
+          );
+          history.replaceState(null, "", `#${id}`);
+          window.dispatchEvent(
+            new CustomEvent("admin-section", { detail: { id } }),
+          );
+        };
+        links.forEach((link) =>
+          link.addEventListener("click", (event) => {
+            event.preventDefault();
+            showSection(link.getAttribute("href").slice(1));
+          }),
+        );
+        showSection(location.hash.slice(1) || "dashboard");
+      })();
+    </script>
+    <script>
+      (() => {
+        const definitions = {
+          clients: {
+            api: "clientes",
+            title: "cliente",
+            fields: [
+              ["nombre", "Nombre completo", "text", true],
+              ["telefono", "Celular", "tel", true],
+              ["correo", "Correo", "email"],
+              ["fecha_nacimiento", "Fecha de nacimiento", "date"],
+            ],
+            columns: ["nombre", "telefono", "correo", "fecha_nacimiento"],
+          },
+          services: {
+            api: "servicios",
+            title: "servicio",
+            fields: [
+              ["nombre", "Nombre", "text", true],
+              ["descripcion", "Descripción", "textarea"],
+              ["precio", "Precio (Bs)", "number", true],
+              ["duracion_minutos", "Duración (minutos)", "number"],
+              ["activo", "Activo", "select"],
+            ],
+            columns: ["nombre", "precio", "duracion_minutos", "activo"],
+          },
+          dresses: {
+            api: "vestidos",
+            title: "vestido",
+            fields: [
+              ["nombre", "Nombre", "text", true],
+              ["categoria", "Categoría", "text"],
+              ["color", "Color", "text"],
+              ["talla", "Talla", "text"],
+              ["precio", "Precio (Bs)", "number", true],
+              ["imagen", "Ruta de imagen", "text"],
+              ["disponible", "Disponible", "select"],
+            ],
+            columns: [
+              "nombre",
+              "categoria",
+              "color",
+              "talla",
+              "precio",
+              "disponible",
+            ],
+          },
+        };
+        let activePanel = "";
+        const content = document.querySelector(".admin-content");
+        const api = async (url, options = {}) => {
+          const response = await fetch(`/api/${url}`, {
+            ...options,
+            headers: {
+              Authorization: `Bearer ${window.ilSaloneAdminToken}`,
+              "Content-Type": "application/json",
+              ...(options.headers || {}),
+            },
+          });
+          const data = await response.json();
+          if (!response.ok)
+            throw new Error(data.error || "No se pudo completar la operación.");
+          return data;
+        };
+        const label = (name) =>
+          name
+            .replaceAll("_", " ")
+            .replace(/\b\w/g, (letter) => letter.toUpperCase());
+        const escape = (value) =>
+          String(value ?? "").replace(
+            /[&<>"]/g,
+            (character) =>
+              ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[
+                character
+              ],
+          );
+        const panelData = (id) =>
+          content.querySelector(`#${id} .admin-feedback`);
+        const showMessage = (id, message, danger = false) => {
+          const target = panelData(id);
+          target.textContent = message;
+          target.className = `admin-feedback ${danger ? "text-danger" : "availability"}`;
+        };
+        const draw = async (id) => {
+          const config = definitions[id];
+          if (!config || !window.ilSaloneAdminToken) return;
+          try {
+            const rows = await api(config.api);
+            const panel = content.querySelector(`#${id}`);
+            const tools = panel.querySelector(".admin-tools");
+            tools.innerHTML = `<button class="btn btn-gold" data-crud-create="${id}"><i class="fa-solid fa-plus me-1"></i>Registrar ${config.title}</button><button class="btn btn-outline-gold" data-crud-refresh="${id}"><i class="fa-solid fa-rotate"></i> Actualizar</button>`;
+            let table = panel.querySelector(".admin-table-wrap");
+            if (!table) {
+              table = document.createElement("div");
+              table.className = "admin-table-wrap table-responsive mt-4";
+              panel.querySelector(".admin-feedback").before(table);
+            }
+            const headings = config.columns.map(label).join("");
+            table.innerHTML = `<table class="table align-middle"><thead><tr>${config.columns.map((column) => `<th>${label(column)}</th>`).join("")}<th>Acciones</th></tr></thead><tbody>${rows.length ? rows.map((row) => `<tr>${config.columns.map((column) => `<td>${escape(column === "activo" || column === "disponible" ? (Number(row[column]) ? "Sí" : "No") : row[column])}</td>`).join("")}<td class="text-nowrap"><button class="btn btn-sm btn-outline-gold" data-crud-edit="${id}" data-id="${row.id}">Editar</button> <button class="btn btn-sm btn-outline-danger" data-crud-delete="${id}" data-id="${row.id}">Eliminar</button></td></tr>`).join("") : `<tr><td colspan="${config.columns.length + 1}" class="text-center py-4">Aún no hay registros.</td></tr>`}</tbody></table>`;
+            panel._rows = rows;
+          } catch (error) {
+            showMessage(id, error.message, true);
+          }
+        };
+        const openForm = (id, row = {}) => {
+          const config = definitions[id];
+          const existing = document.querySelector("#crudModal");
+          existing?.remove();
+          const fields = config.fields
+            .map(([key, text, type, required]) => {
+              const value = escape(row[key] ?? (type === "select" ? 1 : ""));
+              const input =
+                type === "textarea"
+                  ? `<textarea class="form-control" id="crud-${key}" ${required ? "required" : ""}>${value}</textarea>`
+                  : type === "select"
+                    ? `<select class="form-select" id="crud-${key}"><option value="1" ${Number(value) ? "selected" : ""}>Sí</option><option value="0" ${!Number(value) ? "selected" : ""}>No</option></select>`
+                    : `<input class="form-control" id="crud-${key}" type="${type}" value="${value}" ${required ? "required" : ""}>`;
+              return `<div class="col-md-6"><label class="form-label" for="crud-${key}">${text}</label>${input}</div>`;
+            })
+            .join("");
+          document.body.insertAdjacentHTML(
+            "beforeend",
+            `<div class="modal fade" id="crudModal" tabindex="-1"><div class="modal-dialog modal-lg modal-dialog-scrollable"><form class="modal-content" id="crudForm"><div class="modal-header"><h5 class="modal-title">${row.id ? "Editar" : "Registrar"} ${config.title}</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="row g-3">${fields}</div><p class="text-danger small mt-3 mb-0" id="crudError"></p></div><div class="modal-footer"><button class="btn btn-outline-gold" type="button" data-bs-dismiss="modal">Cancelar</button><button class="btn btn-gold" type="submit">Guardar</button></div></form></div></div>`,
+          );
+          const modalElement = document.querySelector("#crudModal");
+          const modal = new bootstrap.Modal(modalElement);
+          modalElement.addEventListener("hidden.bs.modal", () =>
+            modalElement.remove(),
+          );
+          document
+            .querySelector("#crudForm")
+            .addEventListener("submit", async (event) => {
+              event.preventDefault();
+              const body = Object.fromEntries(
+                config.fields.map(([key, , type]) => [
+                  key,
+                  document.querySelector(`#crud-${key}`).value,
+                ]),
+              );
+              try {
+                await api(`${config.api}${row.id ? `/${row.id}` : ""}`, {
+                  method: row.id ? "PUT" : "POST",
+                  body: JSON.stringify(body),
+                });
+                modal.hide();
+                await draw(id);
+                showMessage(
+                  id,
+                  `${label(config.title)} guardado correctamente.`,
+                );
+              } catch (error) {
+                document.querySelector("#crudError").textContent =
+                  error.message;
+              }
+            });
+          modal.show();
+        };
+        content.addEventListener("click", async (event) => {
+          const create = event.target.closest("[data-crud-create]");
+          const refresh = event.target.closest("[data-crud-refresh]");
+          const edit = event.target.closest("[data-crud-edit]");
+          const remove = event.target.closest("[data-crud-delete]");
+          if (create) openForm(create.dataset.crudCreate);
+          if (refresh) draw(refresh.dataset.crudRefresh);
+          if (edit)
+            openForm(
+              edit.dataset.crudEdit,
+              content
+                .querySelector(`#${edit.dataset.crudEdit}`)
+                ._rows.find((row) => String(row.id) === edit.dataset.id),
+            );
+          if (remove) {
+            const id = remove.dataset.crudDelete;
+            if (
+              !confirm(
+                "¿Eliminar este registro? Esta acción no se puede deshacer.",
+              )
+            )
+              return;
+            try {
+              await api(`${definitions[id].api}/${remove.dataset.id}`, {
+                method: "DELETE",
+              });
+              await draw(id);
+              showMessage(id, "Registro eliminado.");
+            } catch (error) {
+              showMessage(id, error.message, true);
+            }
+          }
+        });
+        window.addEventListener("admin-authenticated", () =>
+          draw(location.hash.slice(1) || "dashboard"),
+        );
+        window.addEventListener("admin-section", (event) => {
+          activePanel = event.detail.id;
+          draw(activePanel);
+        });
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1242 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Catálogo de Vestidos | Il Salone</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="estilos.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand brand" href="index.html">IL SALONE<small>LIA VINCENZO</small>
+            </a>
+            <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav">
+                <span class="navbar-toggler-icon">
+                </span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="nav">
+                <ul class="navbar-nav align-items-lg-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="nosotros.html">Nosotros</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="servicios.html">Servicios</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="catalogo.html">Vestidos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contacto.html">Contacto</a>
+                    </li>
+                    <li class="nav-item">
+                        <button class="btn btn-outline-gold ms-lg-3" type="button" data-bs-toggle="modal" data-bs-target="#favoritesModal">
+                            <i class="fa-solid fa-heart me-1"></i>Favoritos <span class="badge text-bg-dark" id="favoritesCount">0</span>
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-gold ms-lg-2" href="reserva-vestido.html">Reservar vestido</a>
+                    </li>
+
+                    <li class="nav-item"><a class="nav-link" href="admin.html"><i class="fa-solid fa-user-lock me-1"></i>Iniciar sesión</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <header class="page-hero-catalogo">
+        <div class="container">
+            <span class="eyebrow">Colección especial</span>
+            <h1>Vestidos</h1>
+            <p>El look perfecto para acompañarte en esos momentos que merecen brillar.</p>
+        </div>
+    </header>
+    <main>
+        <section class="section">
+            <div class="container">
+                <div class="filter-panel">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-2">
+                            <label class="form-label" for="filterCategory">Ocasión</label>
+                            <select class="form-select" id="filterCategory">
+                                <option value="all">Todas</option>
+                                <option value="novia">Novias</option>
+                                <option value="coctel">Cóctel</option>
+                                <option value="pasarela">Pasarela</option>
+                                <option value="gala">Gala</option>
+                                <option value="quince">Quinceaños</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label" for="filterColor">Color</label>
+                            <select class="form-select" id="filterColor">
+                                <option value="all">Todos los colores</option>
+                                <option value="blanco">Blanco</option>
+                                <option value="champagne">Champagne</option>
+                                <option value="azul">Azul</option>
+                                <option value="verde">Verde</option>
+                                <option value="rojo">Rojo</option>
+                                <option value="rosa">Rosa</option>
+                                <option value="negro">Negro</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label" for="filterSize">Talla</label>
+                            <select class="form-select" id="filterSize">
+                                <option value="all">Todas</option>
+                                <option value="s">S</option>
+                                <option value="m">M</option>
+                                <option value="l">L</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="priceRange">Precio máximo: <span id="priceValue">Bs 650</span>
+                            </label>
+                            <input class="form-range" type="range" min="350" max="650" step="10" value="650" id="priceRange">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label" for="sortCatalog">Ordenar por</label>
+                            <select class="form-select" id="sortCatalog">
+                                <option value="popular">Más populares</option>
+                                <option value="name">Nombre</option>
+                                <option value="priceAsc">Precio: menor a mayor</option>
+                                <option value="priceDesc">Precio: mayor a menor</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <span class="eyebrow">
+                        <span id="productCount">6</span> vestidos encontrados</span>
+                    <button class="filter-btn" id="clearFilters">Limpiar filtros</button>
+                </div>
+                -- NOVIAS-------------
+                <div class="row g-4" id="dresses">
+                    <div class="col-md-6 col-lg-4 dress" data-name="Jardin de Ensueño" data-category="novia" data-color="champagne" data-size="m" data-price="350" data-popular="1">
+                        <article class="card catalog-card">
+                            <button class="favorite-btn" aria-label="Agregar Jardin de Ensueño a favoritos">
+                                <i class="fa-regular fa-heart">
+                                </i>
+                            </button>
+                            <span class="product-tag">Novia · Premium</span>
+                            <div class="product-image-wrap">
+                                <img class="user-dress-img" src="imagenes/novias/747099237_866897942864719_3953173297042731692_n.webp" alt="Vestido de novia Jardin de Ensueño">
+                            </div>
+                            <div class="card-body">
+                                <h3>Jardin de Ensueño</h3>
+                                <p class="detail">Champagne · Talla M</p>
+                                <p class="price mb-1">Bs 450</p>
+                                <span class="availability">Disponible</span>
+                                <div class="d-flex gap-2 mt-3">
+                                    <button class="btn btn-outline-gold flex-fill quick-view" data-name="Jardin de Ensueño" data-price="450" data-color="Champagne" data-size="M" data-image="imagenes/vista_previa/784226597_28551090654507234_7056772996789784944_n 1.webp">Vista rápida</button>
+                                    <a href="reserva-vestido.html?vestido=Lia%20Blanc" class="btn btn-gold">Reservar</a>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                    <div class="row g-4" id="dresses">
+                        <div class="col-md-6 col-lg-4 dress" data-name="" data-category="novia" data-color="champagne" data-size="m" data-price="450" data-popular="1">
+                            <article class="card catalog-card">
+                                <button class="favorite-btn" aria-label="Agregar Aurora a favoritos">
+                                    <i class="fa-regular fa-heart">
+                                    </i>
+                                </button>
+                                <span class="product-tag">Novia · Premium</span>
+                                <div class="product-image-wrap">
+                                    <img class="user-dress-img" src="imagenes/novias/746021653_2636419980146703_519239697452049805_n.webp" alt="Vestido de novia Lia Blanc">
+
+                                </div>
+                                <div class="card-body">
+                                    <h3>Lia Blanc</h3>
+                                    <p class="detail">Champagne · Talla M</p>
+                                    <p class="price mb-1">Bs 480</p>
+                                    <span class="availability">Disponible</span>
+                                    <div class="d-flex gap-2 mt-3">
+                                        <button class="btn btn-outline-gold flex-fill quick-view" data-name="Lia Blanc" data-price="480" data-color="Champagne" data-size="M" data-image="imagenes/vista_previa/784030451_1068689659475301_8419718150535037066_n 2.webp">Vista rápida</button>
+                                        <a href="reserva-vestido.html?vestido=Lia%20Blanc" class="btn btn-gold">Reservar</a>
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+                        <div class="row g-4" id="dresses">
+                            <div class="col-md-6 col-lg-4 dress" data-name="Promesa Dorada" data-category="novia" data-color="blanco" data-size="s" data-price="300" data-popular="1">
+                                <article class="card catalog-card">
+                                    <button class="favorite-btn" aria-label="Agregar Aurora a favoritos">
+                                        <i class="fa-regular fa-heart">
+                                        </i>
+                                    </button>
+                                    <span class="product-tag">Novia · Premium</span>
+                                    <div class="product-image-wrap">
+                                        <img class="user-dress-img" src="imagenes/novias/748883017_1581166026957383_2017920814554252036_n.webp" alt="Vestido de novia Lia Blanc">
+
+                                    </div>
+                                    <div class="card-body">
+                                        <h3>Promesa Dorada</h3>
+                                        <p class="detail">Blanco · Talla S </p>
+                                        <p class="price mb-1">Bs 300</p>
+                                        <span class="availability">Disponible</span>
+                                        <div class="d-flex gap-2 mt-3">
+                                            <button class="btn btn-outline-gold flex-fill quick-view" data-name="Promesa Dorada" data-price="300" data-color="Champagne" data-size="S" data-image="imagenes/vista_previa/784251367_1852274576180985_7885966084870488060_n3.webp">Vista rápida</button>
+                                            <a href="reserva-vestido.html?vestido=Lia%20Blanc" class="btn btn-gold">Reservar</a>
+                                        </div>
+                                    </div>
+                                </article>
+                            </div>
+                            <div class="row g-4" id="dresses">
+                                <div class="col-md-6 col-lg-4 dress" data-name="Amor Eterno" data-category="novia" data-color="blanco" data-size="s" data-price="500" data-popular="1">
+                                    <article class="card catalog-card">
+                                        <button class="favorite-btn" aria-label="Agregar Amor Eterno a favoritos">
+                                            <i class="fa-regular fa-heart">
+                                            </i>
+                                        </button>
+                                        <span class="product-tag">Novia · Premium</span>
+                                        <div class="product-image-wrap">
+                                            <img class="user-dress-img" src="imagenes/novias/749214251_2894847777574261_1763121991384644670_n.webp" alt="Vestido de novia Amor Eterno ">
+
+                                        </div>
+                                        <div class="card-body">
+                                            <h3>Amor Eterno</h3>
+                                            <p class="detail">Blanco · Talla S</p>
+                                            <p class="price mb-1">Bs 500</p>
+                                            <span class="availability no">No Disponible</span>
+                                            <div class="d-flex gap-2 mt-3">
+                                                <button class="btn btn-outline-gold flex-fill quick-view" data-name="Amor Eterno" data-price="500" data-color="blanco" data-size="S" data-image="imagenes/vista_previa/785123847_1752965932523178_441998903672001664_n 6.webp">Vista rápida</button>
+                                                <a href="reserva-vestido.html?vestido=Lia%20Blanc" class="btn btn-gold">Reservar</a>
+                                            </div>
+                                        </div>
+                                    </article>
+                                </div>
+                                <div class="row g-4" id="dresses">
+                                    <div class="col-md-6 col-lg-4 dress" data-name="Estrellas en Velo" data-category="novia" data-color="blanco" data-size="m" data-price="550" data-popular="1">
+                                        <article class="card catalog-card">
+                                            <button class="favorite-btn" aria-label="Agregar Estrellas en Velo a favoritos">
+                                                <i class="fa-regular fa-heart">
+                                                </i>
+                                            </button>
+                                            <span class="product-tag">Novia · Premium</span>
+                                            <div class="product-image-wrap">
+                                                <img class="user-dress-img" src="imagenes/novias/749330542_1435285275077771_7481696532873694663_n.webp" alt="Vestido de novia Estrellas en Velo">
+
+                                            </div>
+                                            <div class="card-body">
+                                                <h3>Estrellas en Velo</h3>
+                                                <p class="detail">Blanco · Talla M</p>
+                                                <p class="price mb-1">Bs 550</p>
+                                                <span class="availability">Disponible</span>
+                                                <div class="d-flex gap-2 mt-3">
+                                                    <button class="btn btn-outline-gold flex-fill quick-view" data-name="Estrellas en Velo" data-price="550" data-color="Blanco" data-size="M" data-image="imagenes/vista_previa/784507110_1400151192060825_464164267405791738_n 5.webp">Vista rápida</button>
+                                                    <a href="reserva-vestido.html?vestido=Lia%20Blanc" class="btn btn-gold">Reservar</a>
+                                                </div>
+                                            </div>
+                                        </article>
+                                    </div>
+                                    <div class="row g-4" id="dresses">
+                                        <div class="col-md-6 col-lg-4 dress" data-name="Lia Blanc" data-category="novia" data-color="champagne" data-size="m" data-price="480" data-popular="1">
+                                            <article class="card catalog-card">
+                                                <button class="favorite-btn" aria-label="Agregar Aurora a favoritos">
+                                                    <i class="fa-regular fa-heart">
+                                                    </i>
+                                                </button>
+                                                <span class="product-tag">Novia · Premium</span>
+                                                <div class="product-image-wrap">
+                                                    <img class="user-dress-img" src="imagenes/novias/749330548_2224215244784976_3524216664385226190_n.webp" alt="Vestido de novia Lia Blanc">
+
+                                                </div>
+                                                <div class="card-body">
+                                                    <h3>Lia Blanc</h3>
+                                                    <p class="detail">Champagne · Talla M</p>
+                                                    <p class="price mb-1">Bs 480</p>
+                                                    <span class="availability">Disponible</span>
+                                                    <div class="d-flex gap-2 mt-3">
+                                                        <button class="btn btn-outline-gold flex-fill quick-view" data-name="Lia Blanc" data-price="480" data-color="Champagne" data-size="M" data-image="imagenes/vista_previa/782905661_1378647623803733_4987629232720255748_n 4.webp">Vista rápida</button>
+                                                        <a href="reserva-vestido.html?vestido=Lia%20Blanc" class="btn btn-gold">Reservar</a>
+                                                    </div>
+                                                </div>
+                                            </article>
+                                        </div>
+                                        <div class="row g-4" id="dresses">
+                                            <div class="col-md-6 col-lg-4 dress" data-name="Lia Blanc" data-category="novia" data-color="champagne" data-size="m" data-price="480" data-popular="1">
+                                                <article class="card catalog-card">
+                                                    <button class="favorite-btn" aria-label="Agregar Aurora a favoritos">
+                                                        <i class="fa-regular fa-heart">
+                                                        </i>
+                                                    </button>
+                                                    <span class="product-tag">Novia · Premium</span>
+                                                    <div class="product-image-wrap">
+                                                        <img class="user-dress-img" src="imagenes/novias/749330579_1528458945697982_846542167393286484_n.webp" alt="Vestido de novia Lia Blanc">
+
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <h3>Lia Blanc</h3>
+                                                        <p class="detail">Champagne · Talla M</p>
+                                                        <p class="price mb-1">Bs 480</p>
+                                                        <span class="availability">Disponible</span>
+                                                        <div class="d-flex gap-2 mt-3">
+                                                            <button class="btn btn-outline-gold flex-fill quick-view" data-name="Lia Blanc" data-price="480" data-color="Champagne" data-size="M" data-image="imagenes/vista_previa/781459681_1069765005498157_3284735245741642296_n.webp">Vista rápida</button>
+                                                            <a href="reserva-vestido.html?vestido=Lia%20Blanc" class="btn btn-gold">Reservar</a>
+                                                        </div>
+                                                    </div>
+                                                </article>
+                                            </div>
+                                            <div class="row g-4" id="dresses">
+                                                <div class="col-md-6 col-lg-4 dress" data-name="Lia Blanc" data-category="novia" data-color="champagne" data-size="m" data-price="480" data-popular="1">
+                                                    <article class="card catalog-card">
+                                                        <button class="favorite-btn" aria-label="Agregar Aurora a favoritos">
+                                                            <i class="fa-regular fa-heart">
+                                                            </i>
+                                                        </button>
+                                                        <span class="product-tag">Novia · Premium</span>
+                                                        <div class="product-image-wrap">
+                                                            <img class="user-dress-img" src="imagenes/novias/749665052_1433530225250294_8982364661839741965_n.webp" alt="Vestido de novia Lia Blanc">
+
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <h3>Lia Blanc</h3>
+                                                            <p class="detail">Champagne · Talla M</p>
+                                                            <p class="price mb-1">Bs 480</p>
+                                                            <span class="availability">Disponible</span>
+                                                            <div class="d-flex gap-2 mt-3">
+                                                                <button class="btn btn-outline-gold flex-fill quick-view" data-name="Lia Blanc" data-price="480" data-color="Champagne" data-size="M" data-image="imagenes/vista_previa/783985355_27689722260699876_2057446217156963332_n.webp">Vista rápida</button>
+                                                                <a href="reserva-vestido.html?vestido=Lia%20Blanc" class="btn btn-gold">Reservar</a>
+                                                            </div>
+                                                        </div>
+                                                    </article>
+                                                </div>
+                                                <div class="row g-4" id="dresses">
+                                                    <div class="col-md-6 col-lg-4 dress" data-name="Lia Blanc" data-category="novia" data-color="champagne" data-size="m" data-price="480" data-popular="1">
+                                                        <article class="card catalog-card">
+                                                            <button class="favorite-btn" aria-label="Agregar Aurora a favoritos">
+                                                                <i class="fa-regular fa-heart">
+                                                                </i>
+                                                            </button>
+                                                            <span class="product-tag">Novia · Premium</span>
+                                                            <div class="product-image-wrap">
+                                                                <img class="user-dress-img" src="imagenes/novias/750615717_2623160358082171_6463758742631546538_n.webp" alt="Vestido de novia Lia Blanc">
+
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <h3>Lia Blanc</h3>
+                                                                <p class="detail">Champagne · Talla M</p>
+                                                                <p class="price mb-1">Bs 480</p>
+                                                                <span class="availability">Disponible</span>
+                                                                <div class="d-flex gap-2 mt-3">
+                                                                    <button class="btn btn-outline-gold flex-fill quick-view" data-name="Lia Blanc" data-price="480" data-color="Champagne" data-size="M" data-image="imagenes/vista_previa/782905651_1411470910893894_7768970430160742231_n 7.webp">Vista rápida</button>
+                                                                    <a href="reserva-vestido.html?vestido=Lia%20Blanc" class="btn btn-gold">Reservar</a>
+                                                                </div>
+                                                            </div>
+                                                        </article>
+                                                    </div>
+                                                    ----------------- pasarela-------------
+                                                    <div class="col-md-6 col-lg-4 dress" data-name="Zafiro Runway" data-category="pasarela" data-color="azul" data-size="l" data-price="520" data-popular="2">
+                                                        <article class="card catalog-card">
+                                                            <button class="favorite-btn" aria-label="Agregar Esmeralda a favoritos">
+                                                                <i class="fa-regular fa-heart">
+                                                                </i>
+                                                            </button>
+                                                            <span class="product-tag">Pasarela · Nuevo</span>
+                                                            <div class="product-image-wrap">
+                                                                <img class="user-dress-img" src="imagenes/pasarela/746351061_994035267018082_7755504662104693734_n.webp" alt="Vestido de pasarela Zafiro Runway">
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <h3>Zafiro Runway</h3>
+                                                                <p class="detail">Azul zafiro · Talla L</p>
+                                                                <p class="price mb-1">Bs 520</p>
+                                                                <span class="availability">Disponible</span>
+                                                                <div class="d-flex gap-2 mt-3">
+                                                                    <button class="btn btn-outline-gold flex-fill quick-view" data-name="Zafiro Runway" data-price="520" data-color="Azul zafiro" data-size="L" data-image="imagenes/vista_previa/784617499_1028324776866590_1555976299600257803_n.webp">Vista rápida</button>
+                                                                    <a href="reserva-vestido.html?vestido=Zafiro%20Runway" class="btn btn-gold">Reservar</a>
+                                                                </div>
+                                                            </div>
+                                                        </article>
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-4 dress" data-name="Zafiro Runway" data-category="pasarela" data-color="azul" data-size="l" data-price="520" data-popular="2">
+                                                        <article class="card catalog-card">
+                                                            <button class="favorite-btn" aria-label="Agregar Esmeralda a favoritos">
+                                                                <i class="fa-regular fa-heart">
+                                                                </i>
+                                                            </button>
+                                                            <span class="product-tag">Pasarela · Nuevo</span>
+                                                            <div class="product-image-wrap">
+                                                                <img class="user-dress-img" src="imagenes/pasarela/746909373_2102597514015921_2223938190641337548_n.webp" alt="Vestido de pasarela Zafiro Runway">
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <h3>Zafiro Runway</h3>
+                                                                <p class="detail">Azul zafiro · Talla L</p>
+                                                                <p class="price mb-1">Bs 520</p>
+                                                                <span class="availability">Disponible</span>
+                                                                <div class="d-flex gap-2 mt-3">
+                                                                    <button class="btn btn-outline-gold flex-fill quick-view" data-name="Zafiro Runway" data-price="520" data-color="Azul zafiro" data-size="L" data-image="imagenes/vista_previa/783899137_1251978490364174_7569769333980197188_n.webp">Vista rápida</button>
+                                                                    <a href="reserva-vestido.html?vestido=Zafiro%20Runway" class="btn btn-gold">Reservar</a>
+                                                                </div>
+                                                            </div>
+                                                        </article>
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-4 dress" data-name="Zafiro Runway" data-category="pasarela" data-color="azul" data-size="l" data-price="520" data-popular="2">
+                                                        <article class="card catalog-card">
+                                                            <button class="favorite-btn" aria-label="Agregar Esmeralda a favoritos">
+                                                                <i class="fa-regular fa-heart">
+                                                                </i>
+                                                            </button>
+                                                            <span class="product-tag">Pasarela · Nuevo</span>
+                                                            <div class="product-image-wrap">
+                                                                <img class="user-dress-img" src="imagenes/pasarela/746983334_900151223131157_3736665137258195825_n.webp" alt="Vestido de pasarela Zafiro Runway">
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <h3>Zafiro Runway</h3>
+                                                                <p class="detail">Azul zafiro · Talla L</p>
+                                                                <p class="price mb-1">Bs 520</p>
+                                                                <span class="availability">Disponible</span>
+                                                                <div class="d-flex gap-2 mt-3">
+                                                                    <button class="btn btn-outline-gold flex-fill quick-view" data-name="Zafiro Runway" data-price="520" data-color="Azul zafiro" data-size="L" data-image="imagenes/vista_previa/783856881_2052576645629695_9075799378777924700_n.webp">Vista rápida</button>
+                                                                    <a href="reserva-vestido.html?vestido=Zafiro%20Runway" class="btn btn-gold">Reservar</a>
+                                                                </div>
+                                                            </div>
+                                                        </article>
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-4 dress" data-name="Zafiro Runway" data-category="pasarela" data-color="azul" data-size="l" data-price="520" data-popular="2">
+                                                        <article class="card catalog-card">
+                                                            <button class="favorite-btn" aria-label="Agregar Esmeralda a favoritos">
+                                                                <i class="fa-regular fa-heart">
+                                                                </i>
+                                                            </button>
+                                                            <span class="product-tag">Pasarela · Nuevo</span>
+                                                            <div class="product-image-wrap">
+                                                                <img class="user-dress-img" src="imagenes/pasarela/747833102_1017848360992425_8730756144656348259_n.webp" alt="Vestido de pasarela Zafiro Runway">
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <h3>Zafiro Runway</h3>
+                                                                <p class="detail">Azul zafiro · Talla L</p>
+                                                                <p class="price mb-1">Bs 520</p>
+                                                                <span class="availability">Disponible</span>
+                                                                <div class="d-flex gap-2 mt-3">
+                                                                    <button class="btn btn-outline-gold flex-fill quick-view" data-name="Zafiro Runway" data-price="520" data-color="Azul zafiro" data-size="L" data-image="imagenes/vista_previa/784394138_1419154123431367_6040303627038306762_n.webp">Vista rápida</button>
+                                                                    <a href="reserva-vestido.html?vestido=Zafiro%20Runway" class="btn btn-gold">Reservar</a>
+                                                                </div>
+                                                            </div>
+                                                        </article>
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-4 dress" data-name="Zafiro Runway" data-category="pasarela" data-color="azul" data-size="l" data-price="520" data-popular="2">
+                                                        <article class="card catalog-card">
+                                                            <button class="favorite-btn" aria-label="Agregar Esmeralda a favoritos">
+                                                                <i class="fa-regular fa-heart">
+                                                                </i>
+                                                            </button>
+                                                            <span class="product-tag">Pasarela · Nuevo</span>
+                                                            <div class="product-image-wrap">
+                                                                <img class="user-dress-img" src="imagenes/pasarela/747862774_1011484844767044_4804764735485262758_n.webp" alt="Vestido de pasarela Zafiro Runway">
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <h3>Zafiro Runway</h3>
+                                                                <p class="detail">Azul zafiro · Talla L</p>
+                                                                <p class="price mb-1">Bs 520</p>
+                                                                <span class="availability">Disponible</span>
+                                                                <div class="d-flex gap-2 mt-3">
+                                                                    <button class="btn btn-outline-gold flex-fill quick-view" data-name="Zafiro Runway" data-price="520" data-color="Azul zafiro" data-size="L" data-image="imagenes/vista_previa/783948354_1018655484322020_2725897263274513295_n.webp">Vista rápida</button>
+                                                                    <a href="reserva-vestido.html?vestido=Zafiro%20Runway" class="btn btn-gold">Reservar</a>
+                                                                </div>
+                                                            </div>
+                                                        </article>
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-4 dress" data-name="Zafiro Runway" data-category="pasarela" data-color="azul" data-size="l" data-price="520" data-popular="2">
+                                                        <article class="card catalog-card">
+                                                            <button class="favorite-btn" aria-label="Agregar Esmeralda a favoritos">
+                                                                <i class="fa-regular fa-heart">
+                                                                </i>
+                                                            </button>
+                                                            <span class="product-tag">Pasarela · Nuevo</span>
+                                                            <div class="product-image-wrap">
+                                                                <img class="user-dress-img" src="imagenes/pasarela/747862825_2210939556363053_4483588741783033800_n.webp" alt="Vestido de pasarela Zafiro Runway">
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <h3>Zafiro Runway</h3>
+                                                                <p class="detail">Azul zafiro · Talla L</p>
+                                                                <p class="price mb-1">Bs 520</p>
+                                                                <span class="availability">Disponible</span>
+                                                                <div class="d-flex gap-2 mt-3">
+                                                                    <button class="btn btn-outline-gold flex-fill quick-view" data-name="Zafiro Runway" data-price="520" data-color="Azul zafiro" data-size="L" data-image="imagenes/vista_previa/782905671_27681472398201341_3873596849965726925_n.webp">Vista rápida</button>
+                                                                    <a href="reserva-vestido.html?vestido=Zafiro%20Runway" class="btn btn-gold">Reservar</a>
+                                                                </div>
+                                                            </div>
+                                                        </article>
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-4 dress" data-name="Zafiro Runway" data-category="pasarela" data-color="azul" data-size="l" data-price="520" data-popular="2">
+                                                        <article class="card catalog-card">
+                                                            <button class="favorite-btn" aria-label="Agregar Esmeralda a favoritos">
+                                                                <i class="fa-regular fa-heart">
+                                                                </i>
+                                                            </button>
+                                                            <span class="product-tag">Pasarela · Nuevo</span>
+                                                            <div class="product-image-wrap">
+                                                                <img class="user-dress-img" src="imagenes/pasarela/747881799_1726512972022090_5413243965316151942_n.webp" alt="Vestido de pasarela Zafiro Runway">
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <h3>Zafiro Runway</h3>
+                                                                <p class="detail">Azul zafiro · Talla L</p>
+                                                                <p class="price mb-1">Bs 520</p>
+                                                                <span class="availability">Disponible</span>
+                                                                <div class="d-flex gap-2 mt-3">
+                                                                    <button class="btn btn-outline-gold flex-fill quick-view" data-name="Zafiro Runway" data-price="520" data-color="Azul zafiro" data-size="L" data-image="imagenes/vista_previa/784251436_1313638453982804_4480066547720331329_n.webp">Vista rápida</button>
+                                                                    <a href="reserva-vestido.html?vestido=Zafiro%20Runway" class="btn btn-gold">Reservar</a>
+                                                                </div>
+                                                            </div>
+                                                        </article>
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-4 dress" data-name="Zafiro Runway" data-category="pasarela" data-color="azul" data-size="l" data-price="520" data-popular="2">
+                                                        <article class="card catalog-card">
+                                                            <button class="favorite-btn" aria-label="Agregar Esmeralda a favoritos">
+                                                                <i class="fa-regular fa-heart">
+                                                                </i>
+                                                            </button>
+                                                            <span class="product-tag">Pasarela · Nuevo</span>
+                                                            <div class="product-image-wrap">
+                                                                <img class="user-dress-img" src="imagenes/pasarela/748053525_870798879059776_4944228323703046332_n.webp" alt="Vestido de pasarela Zafiro Runway">
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <h3>Zafiro Runway</h3>
+                                                                <p class="detail">Azul zafiro · Talla L</p>
+                                                                <p class="price mb-1">Bs 520</p>
+                                                                <span class="availability">Disponible</span>
+                                                                <div class="d-flex gap-2 mt-3">
+                                                                    <button class="btn btn-outline-gold flex-fill quick-view" data-name="Zafiro Runway" data-price="520" data-color="Azul zafiro" data-size="L" data-image="imagenes/vista_previa/783374820_1778936203240321_5034394898897713822_n.webp">Vista rápida</button>
+                                                                    <a href="reserva-vestido.html?vestido=Zafiro%20Runway" class="btn btn-gold">Reservar</a>
+                                                                </div>
+                                                            </div>
+                                                        </article>
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-4 dress" data-name="Zafiro Runway" data-category="pasarela" data-color="azul" data-size="l" data-price="520" data-popular="2">
+                                                        <article class="card catalog-card">
+                                                            <button class="favorite-btn" aria-label="Agregar Esmeralda a favoritos">
+                                                                <i class="fa-regular fa-heart">
+                                                                </i>
+                                                            </button>
+                                                            <span class="product-tag">Pasarela · Nuevo</span>
+                                                            <div class="product-image-wrap">
+                                                                <img class="user-dress-img" src="imagenes/pasarela/748053706_2063681537563615_4900414030126151399_n.webp" alt="Vestido de pasarela Zafiro Runway">
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <h3>Zafiro Runway</h3>
+                                                                <p class="detail">Azul zafiro · Talla L</p>
+                                                                <p class="price mb-1">Bs 520</p>
+                                                                <span class="availability">Disponible</span>
+                                                                <div class="d-flex gap-2 mt-3">
+                                                                    <button class="btn btn-outline-gold flex-fill quick-view" data-name="Zafiro Runway" data-price="520" data-color="Azul zafiro" data-size="L" data-image="imagenes/vista_previa/784980314_2628383377592124_5459076951508433593_n.webp">Vista rápida</button>
+                                                                    <a href="reserva-vestido.html?vestido=Zafiro%20Runway" class="btn btn-gold">Reservar</a>
+                                                                </div>
+                                                            </div>
+                                                        </article>
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-4 dress" data-name="Zafiro Runway" data-category="pasarela" data-color="azul" data-size="l" data-price="520" data-popular="2">
+                                                        <article class="card catalog-card">
+                                                            <button class="favorite-btn" aria-label="Agregar Esmeralda a favoritos">
+                                                                <i class="fa-regular fa-heart">
+                                                                </i>
+                                                            </button>
+                                                            <span class="product-tag">Pasarela · Nuevo</span>
+                                                            <div class="product-image-wrap">
+                                                                <img class="user-dress-img" src="imagenes/pasarela/748106897_2112308723032579_1240373156513670319_n.webp" alt="Vestido de pasarela Zafiro Runway">
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <h3>Zafiro Runway</h3>
+                                                                <p class="detail">Azul zafiro · Talla L</p>
+                                                                <p class="price mb-1">Bs 520</p>
+                                                                <span class="availability">Disponible</span>
+                                                                <div class="d-flex gap-2 mt-3">
+                                                                    <button class="btn btn-outline-gold flex-fill quick-view" data-name="Zafiro Runway" data-price="520" data-color="Azul zafiro" data-size="L" data-image="imagenes/pasarela/746351061_994035267018082_7755504662104693734_n.webp">Vista rápida</button>
+                                                                    <a href="reserva-vestido.html?vestido=Zafiro%20Runway" class="btn btn-gold">Reservar</a>
+                                                                </div>
+                                                            </div>
+                                                        </article>
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-4 dress" data-name="Zafiro Runway" data-category="pasarela" data-color="azul" data-size="l" data-price="520" data-popular="2">
+                                                        <article class="card catalog-card">
+                                                            <button class="favorite-btn" aria-label="Agregar Esmeralda a favoritos">
+                                                                <i class="fa-regular fa-heart">
+                                                                </i>
+                                                            </button>
+                                                            <span class="product-tag">Pasarela · Nuevo</span>
+                                                            <div class="product-image-wrap">
+                                                                <img class="user-dress-img" src="imagenes/pasarela/748133918_27847121164909733_7766895358215856610_n.webp" alt="Vestido de pasarela Zafiro Runway">
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <h3>Zafiro Runway</h3>
+                                                                <p class="detail">Azul zafiro · Talla L</p>
+                                                                <p class="price mb-1">Bs 520</p>
+                                                                <span class="availability">Disponible</span>
+                                                                <div class="d-flex gap-2 mt-3">
+                                                                    <button class="btn btn-outline-gold flex-fill quick-view" data-name="Zafiro Runway" data-price="520" data-color="Azul zafiro" data-size="L" data-image="imagenes/pasarela/746351061_994035267018082_7755504662104693734_n.webp">Vista rápida</button>
+                                                                    <a href="reserva-vestido.html?vestido=Zafiro%20Runway" class="btn btn-gold">Reservar</a>
+                                                                </div>
+                                                            </div>
+                                                        </article>
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-4 dress" data-name="Zafiro Runway" data-category="pasarela" data-color="azul" data-size="l" data-price="520" data-popular="2">
+                                                        <article class="card catalog-card">
+                                                            <button class="favorite-btn" aria-label="Agregar Esmeralda a favoritos">
+                                                                <i class="fa-regular fa-heart">
+                                                                </i>
+                                                            </button>
+                                                            <span class="product-tag">Pasarela · Nuevo</span>
+                                                            <div class="product-image-wrap">
+                                                                <img class="user-dress-img" src="imagenes/pasarela/748134317_1046029264566236_1931992163812098669_n.webp" alt="Vestido de pasarela Zafiro Runway">
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <h3>Zafiro Runway</h3>
+                                                                <p class="detail">Azul zafiro · Talla L</p>
+                                                                <p class="price mb-1">Bs 520</p>
+                                                                <span class="availability">Disponible</span>
+                                                                <div class="d-flex gap-2 mt-3">
+                                                                    <button class="btn btn-outline-gold flex-fill quick-view" data-name="Zafiro Runway" data-price="520" data-color="Azul zafiro" data-size="L" data-image="imagenes/pasarela/746351061_994035267018082_7755504662104693734_n.webp">Vista rápida</button>
+                                                                    <a href="reserva-vestido.html?vestido=Zafiro%20Runway" class="btn btn-gold">Reservar</a>
+                                                                </div>
+                                                            </div>
+                                                        </article>
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-4 dress" data-name="Zafiro Runway" data-category="pasarela" data-color="azul" data-size="l" data-price="520" data-popular="2">
+                                                        <article class="card catalog-card">
+                                                            <button class="favorite-btn" aria-label="Agregar Esmeralda a favoritos">
+                                                                <i class="fa-regular fa-heart">
+                                                                </i>
+                                                            </button>
+                                                            <span class="product-tag">Pasarela · Nuevo</span>
+                                                            <div class="product-image-wrap">
+                                                                <img class="user-dress-img" src="imagenes/pasarela/748160687_1709953216860190_7993106377327108690_n.webp" alt="Vestido de pasarela Zafiro Runway">
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <h3>Zafiro Runway</h3>
+                                                                <p class="detail">Azul zafiro · Talla L</p>
+                                                                <p class="price mb-1">Bs 520</p>
+                                                                <span class="availability">Disponible</span>
+                                                                <div class="d-flex gap-2 mt-3">
+                                                                    <button class="btn btn-outline-gold flex-fill quick-view" data-name="Zafiro Runway" data-price="520" data-color="Azul zafiro" data-size="L" data-image="imagenes/pasarela/746351061_994035267018082_7755504662104693734_n.webp">Vista rápida</button>
+                                                                    <a href="reserva-vestido.html?vestido=Zafiro%20Runway" class="btn btn-gold">Reservar</a>
+                                                                </div>
+                                                            </div>
+                                                        </article>
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-4 dress" data-name="Zafiro Runway" data-category="pasarela" data-color="azul" data-size="l" data-price="520" data-popular="2">
+                                                        <article class="card catalog-card">
+                                                            <button class="favorite-btn" aria-label="Agregar Esmeralda a favoritos">
+                                                                <i class="fa-regular fa-heart">
+                                                                </i>
+                                                            </button>
+                                                            <span class="product-tag">Pasarela · Nuevo</span>
+                                                            <div class="product-image-wrap">
+                                                                <img class="user-dress-img" src="imagenes/pasarela/748265528_2788427141541409_7928813512074726849_n.webp" alt="Vestido de pasarela Zafiro Runway">
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <h3>Zafiro Runway</h3>
+                                                                <p class="detail">Azul zafiro · Talla L</p>
+                                                                <p class="price mb-1">Bs 520</p>
+                                                                <span class="availability">Disponible</span>
+                                                                <div class="d-flex gap-2 mt-3">
+                                                                    <button class="btn btn-outline-gold flex-fill quick-view" data-name="Zafiro Runway" data-price="520" data-color="Azul zafiro" data-size="L" data-image="imagenes/pasarela/746351061_994035267018082_7755504662104693734_n.webp">Vista rápida</button>
+                                                                    <a href="reserva-vestido.html?vestido=Zafiro%20Runway" class="btn btn-gold">Reservar</a>
+                                                                </div>
+                                                            </div>
+                                                        </article>
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-4 dress" data-name="Zafiro Runway" data-category="pasarela" data-color="azul" data-size="l" data-price="520" data-popular="2">
+                                                        <article class="card catalog-card">
+                                                            <button class="favorite-btn" aria-label="Agregar Esmeralda a favoritos">
+                                                                <i class="fa-regular fa-heart">
+                                                                </i>
+                                                            </button>
+                                                            <span class="product-tag">Pasarela · Nuevo</span>
+                                                            <div class="product-image-wrap">
+                                                                <img class="user-dress-img" src="imagenes/pasarela/748306835_2095010198040725_5232454181927642877_n.webp" alt="Vestido de pasarela Zafiro Runway">
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <h3>Zafiro Runway</h3>
+                                                                <p class="detail">Azul zafiro · Talla L</p>
+                                                                <p class="price mb-1">Bs 520</p>
+                                                                <span class="availability">Disponible</span>
+                                                                <div class="d-flex gap-2 mt-3">
+                                                                    <button class="btn btn-outline-gold flex-fill quick-view" data-name="Zafiro Runway" data-price="520" data-color="Azul zafiro" data-size="L" data-image="imagenes/pasarela/746351061_994035267018082_7755504662104693734_n.webp">Vista rápida</button>
+                                                                    <a href="reserva-vestido.html?vestido=Zafiro%20Runway" class="btn btn-gold">Reservar</a>
+                                                                </div>
+                                                            </div>
+                                                        </article>
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-4 dress" data-name="Zafiro Runway" data-category="pasarela" data-color="azul" data-size="l" data-price="520" data-popular="2">
+                                                        <article class="card catalog-card">
+                                                            <button class="favorite-btn" aria-label="Agregar Esmeralda a favoritos">
+                                                                <i class="fa-regular fa-heart">
+                                                                </i>
+                                                            </button>
+                                                            <span class="product-tag">Pasarela · Nuevo</span>
+                                                            <div class="product-image-wrap">
+                                                                <img class="user-dress-img" src="imagenes/pasarela/748438080_1965425490824727_5858059930366469453_n.webp" alt="Vestido de pasarela Zafiro Runway">
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <h3>Zafiro Runway</h3>
+                                                                <p class="detail">Azul zafiro · Talla L</p>
+                                                                <p class="price mb-1">Bs 520</p>
+                                                                <span class="availability">Disponible</span>
+                                                                <div class="d-flex gap-2 mt-3">
+                                                                    <button class="btn btn-outline-gold flex-fill quick-view" data-name="Zafiro Runway" data-price="520" data-color="Azul zafiro" data-size="L" data-image="imagenes/pasarela/746351061_994035267018082_7755504662104693734_n.webp">Vista rápida</button>
+                                                                    <a href="reserva-vestido.html?vestido=Zafiro%20Runway" class="btn btn-gold">Reservar</a>
+                                                                </div>
+                                                            </div>
+                                                        </article>
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-4 dress" data-name="Zafiro Runway" data-category="pasarela" data-color="azul" data-size="l" data-price="520" data-popular="2">
+                                                        <article class="card catalog-card">
+                                                            <button class="favorite-btn" aria-label="Agregar Esmeralda a favoritos">
+                                                                <i class="fa-regular fa-heart">
+                                                                </i>
+                                                            </button>
+                                                            <span class="product-tag">Pasarela · Nuevo</span>
+                                                            <div class="product-image-wrap">
+                                                                <img class="user-dress-img" src="imagenes/pasarela/748534172_4541733406075095_1257337968833986076_n.webp" alt="Vestido de pasarela Zafiro Runway">
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <h3>Zafiro Runway</h3>
+                                                                <p class="detail">Azul zafiro · Talla L</p>
+                                                                <p class="price mb-1">Bs 520</p>
+                                                                <span class="availability">Disponible</span>
+                                                                <div class="d-flex gap-2 mt-3">
+                                                                    <button class="btn btn-outline-gold flex-fill quick-view" data-name="Zafiro Runway" data-price="520" data-color="Azul zafiro" data-size="L" data-image="imagenes/pasarela/746351061_994035267018082_7755504662104693734_n.webp">Vista rápida</button>
+                                                                    <a href="reserva-vestido.html?vestido=Zafiro%20Runway" class="btn btn-gold">Reservar</a>
+                                                                </div>
+                                                            </div>
+                                                        </article>
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-4 dress" data-name="Zafiro Runway" data-category="pasarela" data-color="azul" data-size="l" data-price="520" data-popular="2">
+                                                        <article class="card catalog-card">
+                                                            <button class="favorite-btn" aria-label="Agregar Esmeralda a favoritos">
+                                                                <i class="fa-regular fa-heart">
+                                                                </i>
+                                                            </button>
+                                                            <span class="product-tag">Pasarela · Nuevo</span>
+                                                            <div class="product-image-wrap">
+                                                                <img class="user-dress-img" src="imagenes/pasarela/748864092_1718735009251760_5812590226473142919_n.webp" alt="Vestido de pasarela Zafiro Runway">
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <h3>Zafiro Runway</h3>
+                                                                <p class="detail">Azul zafiro · Talla L</p>
+                                                                <p class="price mb-1">Bs 520</p>
+                                                                <span class="availability">Disponible</span>
+                                                                <div class="d-flex gap-2 mt-3">
+                                                                    <button class="btn btn-outline-gold flex-fill quick-view" data-name="Zafiro Runway" data-price="520" data-color="Azul zafiro" data-size="L" data-image="imagenes/pasarela/746351061_994035267018082_7755504662104693734_n.webp">Vista rápida</button>
+                                                                    <a href="reserva-vestido.html?vestido=Zafiro%20Runway" class="btn btn-gold">Reservar</a>
+                                                                </div>
+                                                            </div>
+                                                        </article>
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-4 dress" data-name="Zafiro Runway" data-category="pasarela" data-color="azul" data-size="l" data-price="520" data-popular="2">
+                                                        <article class="card catalog-card">
+                                                            <button class="favorite-btn" aria-label="Agregar Esmeralda a favoritos">
+                                                                <i class="fa-regular fa-heart">
+                                                                </i>
+                                                            </button>
+                                                            <span class="product-tag">Pasarela · Nuevo</span>
+                                                            <div class="product-image-wrap">
+                                                                <img class="user-dress-img" src="imagenes/pasarela/748864139_1064892379561501_2556120312028229951_n.webp" alt="Vestido de pasarela Zafiro Runway">
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <h3>Zafiro Runway</h3>
+                                                                <p class="detail">Azul zafiro · Talla L</p>
+                                                                <p class="price mb-1">Bs 520</p>
+                                                                <span class="availability">Disponible</span>
+                                                                <div class="d-flex gap-2 mt-3">
+                                                                    <button class="btn btn-outline-gold flex-fill quick-view" data-name="Zafiro Runway" data-price="520" data-color="Azul zafiro" data-size="L" data-image="imagenes/pasarela/746351061_994035267018082_7755504662104693734_n.webp">Vista rápida</button>
+                                                                    <a href="reserva-vestido.html?vestido=Zafiro%20Runway" class="btn btn-gold">Reservar</a>
+                                                                </div>
+                                                            </div>
+                                                        </article>
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-4 dress" data-name="Zafiro Runway" data-category="pasarela" data-color="azul" data-size="l" data-price="520" data-popular="2">
+                                                        <article class="card catalog-card">
+                                                            <button class="favorite-btn" aria-label="Agregar Esmeralda a favoritos">
+                                                                <i class="fa-regular fa-heart">
+                                                                </i>
+                                                            </button>
+                                                            <span class="product-tag">Pasarela · Nuevo</span>
+                                                            <div class="product-image-wrap">
+                                                                <img class="user-dress-img" src="imagenes/pasarela/748978421_1737703357381165_1641956022182854395_n.webp" alt="Vestido de pasarela Zafiro Runway">
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <h3>Zafiro Runway</h3>
+                                                                <p class="detail">Azul zafiro · Talla L</p>
+                                                                <p class="price mb-1">Bs 520</p>
+                                                                <span class="availability">Disponible</span>
+                                                                <div class="d-flex gap-2 mt-3">
+                                                                    <button class="btn btn-outline-gold flex-fill quick-view" data-name="Zafiro Runway" data-price="520" data-color="Azul zafiro" data-size="L" data-image="imagenes/pasarela/746351061_994035267018082_7755504662104693734_n.webp">Vista rápida</button>
+                                                                    <a href="reserva-vestido.html?vestido=Zafiro%20Runway" class="btn btn-gold">Reservar</a>
+                                                                </div>
+                                                            </div>
+                                                        </article>
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-4 dress" data-name="Zafiro Runway" data-category="pasarela" data-color="azul" data-size="l" data-price="520" data-popular="2">
+                                                        <article class="card catalog-card">
+                                                            <button class="favorite-btn" aria-label="Agregar Esmeralda a favoritos">
+                                                                <i class="fa-regular fa-heart">
+                                                                </i>
+                                                            </button>
+                                                            <span class="product-tag">Pasarela · Nuevo</span>
+                                                            <div class="product-image-wrap">
+                                                                <img class="user-dress-img" src="imagenes/pasarela/749022950_1756364322378021_7727936501839706938_n.webp" alt="Vestido de pasarela Zafiro Runway">
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <h3>Zafiro Runway</h3>
+                                                                <p class="detail">Azul zafiro · Talla L</p>
+                                                                <p class="price mb-1">Bs 520</p>
+                                                                <span class="availability">Disponible</span>
+                                                                <div class="d-flex gap-2 mt-3">
+                                                                    <button class="btn btn-outline-gold flex-fill quick-view" data-name="Zafiro Runway" data-price="520" data-color="Azul zafiro" data-size="L" data-image="imagenes/pasarela/746351061_994035267018082_7755504662104693734_n.webp">Vista rápida</button>
+                                                                    <a href="reserva-vestido.html?vestido=Zafiro%20Runway" class="btn btn-gold">Reservar</a>
+                                                                </div>
+                                                            </div>
+                                                        </article>
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-4 dress" data-name="Zafiro Runway" data-category="pasarela" data-color="azul" data-size="l" data-price="520" data-popular="2">
+                                                        <article class="card catalog-card">
+                                                            <button class="favorite-btn" aria-label="Agregar Esmeralda a favoritos">
+                                                                <i class="fa-regular fa-heart">
+                                                                </i>
+                                                            </button>
+                                                            <span class="product-tag">Pasarela · Nuevo</span>
+                                                            <div class="product-image-wrap">
+                                                                <img class="user-dress-img" src="imagenes/pasarela/749023119_1781780402986312_1931358976048068885_n.webp" alt="Vestido de pasarela Zafiro Runway">
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <h3>Zafiro Runway</h3>
+                                                                <p class="detail">Azul zafiro · Talla L</p>
+                                                                <p class="price mb-1">Bs 520</p>
+                                                                <span class="availability">Disponible</span>
+                                                                <div class="d-flex gap-2 mt-3">
+                                                                    <button class="btn btn-outline-gold flex-fill quick-view" data-name="Zafiro Runway" data-price="520" data-color="Azul zafiro" data-size="L" data-image="imagenes/pasarela/746351061_994035267018082_7755504662104693734_n.webp">Vista rápida</button>
+                                                                    <a href="reserva-vestido.html?vestido=Zafiro%20Runway" class="btn btn-gold">Reservar</a>
+                                                                </div>
+                                                            </div>
+                                                        </article>
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-4 dress" data-name="Zafiro Runway" data-category="pasarela" data-color="azul" data-size="l" data-price="520" data-popular="2">
+                                                        <article class="card catalog-card">
+                                                            <button class="favorite-btn" aria-label="Agregar Esmeralda a favoritos">
+                                                                <i class="fa-regular fa-heart">
+                                                                </i>
+                                                            </button>
+                                                            <span class="product-tag">Pasarela · Nuevo</span>
+                                                            <div class="product-image-wrap">
+                                                                <img class="user-dress-img" src="imagenes/pasarela/749232308_1234099305431676_7344994478590681230_n.webp" alt="Vestido de pasarela Zafiro Runway">
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <h3>Zafiro Runway</h3>
+                                                                <p class="detail">Azul zafiro · Talla L</p>
+                                                                <p class="price mb-1">Bs 520</p>
+                                                                <span class="availability">Disponible</span>
+                                                                <div class="d-flex gap-2 mt-3">
+                                                                    <button class="btn btn-outline-gold flex-fill quick-view" data-name="Zafiro Runway" data-price="520" data-color="Azul zafiro" data-size="L" data-image="imagenes/pasarela/746351061_994035267018082_7755504662104693734_n.webp">Vista rápida</button>
+                                                                    <a href="reserva-vestido.html?vestido=Zafiro%20Runway" class="btn btn-gold">Reservar</a>
+                                                                </div>
+                                                            </div>
+                                                        </article>
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-4 dress" data-name="Zafiro Runway" data-category="pasarela" data-color="azul" data-size="l" data-price="520" data-popular="2">
+                                                        <article class="card catalog-card">
+                                                            <button class="favorite-btn" aria-label="Agregar Esmeralda a favoritos">
+                                                                <i class="fa-regular fa-heart">
+                                                                </i>
+                                                            </button>
+                                                            <span class="product-tag">Pasarela · Nuevo</span>
+                                                            <div class="product-image-wrap">
+                                                                <img class="user-dress-img" src="imagenes/pasarela/749330407_2119367635324611_4978716775384631374_n.webp" alt="Vestido de pasarela Zafiro Runway">
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <h3>Zafiro Runway</h3>
+                                                                <p class="detail">Azul zafiro · Talla L</p>
+                                                                <p class="price mb-1">Bs 520</p>
+                                                                <span class="availability">Disponible</span>
+                                                                <div class="d-flex gap-2 mt-3">
+                                                                    <button class="btn btn-outline-gold flex-fill quick-view" data-name="Zafiro Runway" data-price="520" data-color="Azul zafiro" data-size="L" data-image="imagenes/pasarela/746351061_994035267018082_7755504662104693734_n.webp">Vista rápida</button>
+                                                                    <a href="reserva-vestido.html?vestido=Zafiro%20Runway" class="btn btn-gold">Reservar</a>
+                                                                </div>
+                                                            </div>
+                                                        </article>
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-4 dress" data-name="Zafiro Runway" data-category="pasarela" data-color="azul" data-size="l" data-price="520" data-popular="2">
+                                                        <article class="card catalog-card">
+                                                            <button class="favorite-btn" aria-label="Agregar Esmeralda a favoritos">
+                                                                <i class="fa-regular fa-heart">
+                                                                </i>
+                                                            </button>
+                                                            <span class="product-tag">Pasarela · Nuevo</span>
+                                                            <div class="product-image-wrap">
+                                                                <img class="user-dress-img" src="imagenes/pasarela/749330412_2108971566634013_8390760519100724277_n.webp" alt="Vestido de pasarela Zafiro Runway">
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <h3>Zafiro Runway</h3>
+                                                                <p class="detail">Azul zafiro · Talla L</p>
+                                                                <p class="price mb-1">Bs 520</p>
+                                                                <span class="availability">Disponible</span>
+                                                                <div class="d-flex gap-2 mt-3">
+                                                                    <button class="btn btn-outline-gold flex-fill quick-view" data-name="Zafiro Runway" data-price="520" data-color="Azul zafiro" data-size="L" data-image="imagenes/pasarela/746351061_994035267018082_7755504662104693734_n.webp">Vista rápida</button>
+                                                                    <a href="reserva-vestido.html?vestido=Zafiro%20Runway" class="btn btn-gold">Reservar</a>
+                                                                </div>
+                                                            </div>
+                                                        </article>
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-4 dress" data-name="Zafiro Runway" data-category="pasarela" data-color="azul" data-size="l" data-price="520" data-popular="2">
+                                                        <article class="card catalog-card">
+                                                            <button class="favorite-btn" aria-label="Agregar Esmeralda a favoritos">
+                                                                <i class="fa-regular fa-heart">
+                                                                </i>
+                                                            </button>
+                                                            <span class="product-tag">Pasarela · Nuevo</span>
+                                                            <div class="product-image-wrap">
+                                                                <img class="user-dress-img" src="imagenes/pasarela/749514460_2098670051069628_7194770415137763138_n.webp" alt="Vestido de pasarela Zafiro Runway">
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <h3>Zafiro Runway</h3>
+                                                                <p class="detail">Azul zafiro · Talla L</p>
+                                                                <p class="price mb-1">Bs 520</p>
+                                                                <span class="availability">Disponible</span>
+                                                                <div class="d-flex gap-2 mt-3">
+                                                                    <button class="btn btn-outline-gold flex-fill quick-view" data-name="Zafiro Runway" data-price="520" data-color="Azul zafiro" data-size="L" data-image="imagenes/pasarela/746351061_994035267018082_7755504662104693734_n.webp">Vista rápida</button>
+                                                                    <a href="reserva-vestido.html?vestido=Zafiro%20Runway" class="btn btn-gold">Reservar</a>
+                                                                </div>
+                                                            </div>
+                                                        </article>
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-4 dress" data-name="Zafiro Runway" data-category="pasarela" data-color="azul" data-size="l" data-price="520" data-popular="2">
+                                                        <article class="card catalog-card">
+                                                            <button class="favorite-btn" aria-label="Agregar Esmeralda a favoritos">
+                                                                <i class="fa-regular fa-heart">
+                                                                </i>
+                                                            </button>
+                                                            <span class="product-tag">Pasarela · Nuevo</span>
+                                                            <div class="product-image-wrap">
+                                                                <img class="user-dress-img" src="imagenes/pasarela/749629637_1338769455008109_8513421335296177864_n.webp" alt="Vestido de pasarela Zafiro Runway">
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <h3>Zafiro Runway</h3>
+                                                                <p class="detail">Azul zafiro · Talla L</p>
+                                                                <p class="price mb-1">Bs 520</p>
+                                                                <span class="availability">Disponible</span>
+                                                                <div class="d-flex gap-2 mt-3">
+                                                                    <button class="btn btn-outline-gold flex-fill quick-view" data-name="Zafiro Runway" data-price="520" data-color="Azul zafiro" data-size="L" data-image="imagenes/pasarela/746351061_994035267018082_7755504662104693734_n.webp">Vista rápida</button>
+                                                                    <a href="reserva-vestido.html?vestido=Zafiro%20Runway" class="btn btn-gold">Reservar</a>
+                                                                </div>
+                                                            </div>
+                                                        </article>
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-4 dress" data-name="Zafiro Runway" data-category="pasarela" data-color="azul" data-size="l" data-price="520" data-popular="2">
+                                                        <article class="card catalog-card">
+                                                            <button class="favorite-btn" aria-label="Agregar Esmeralda a favoritos">
+                                                                <i class="fa-regular fa-heart">
+                                                                </i>
+                                                            </button>
+                                                            <span class="product-tag">Pasarela · Nuevo</span>
+                                                            <div class="product-image-wrap">
+                                                                <img class="user-dress-img" src="imagenes/pasarela/749767329_1418646150095524_4526761403644261233_n.webp" alt="Vestido de pasarela Zafiro Runway">
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <h3>Zafiro Runway</h3>
+                                                                <p class="detail">Azul zafiro · Talla L</p>
+                                                                <p class="price mb-1">Bs 520</p>
+                                                                <span class="availability">Disponible</span>
+                                                                <div class="d-flex gap-2 mt-3">
+                                                                    <button class="btn btn-outline-gold flex-fill quick-view" data-name="Zafiro Runway" data-price="520" data-color="Azul zafiro" data-size="L" data-image="imagenes/pasarela/746351061_994035267018082_7755504662104693734_n.webp">Vista rápida</button>
+                                                                    <a href="reserva-vestido.html?vestido=Zafiro%20Runway" class="btn btn-gold">Reservar</a>
+                                                                </div>
+                                                            </div>
+                                                        </article>
+                                                    </div>
+                                                    ----------------- pasarela-------------
+                                                    <div class="col-md-6 col-lg-4 dress" data-name="Rubí" data-category="coctel" data-color="rojo" data-size="m" data-price="390" data-popular="3">
+                                                        <article class="card catalog-card">
+                                                            <button class="favorite-btn" aria-label="Agregar Rubí a favoritos">
+                                                                <i class="fa-regular fa-heart">
+                                                                </i>
+                                                            </button>
+                                                            <div class="product-image-wrap">
+                                                                <img src="imagenes/galeriasyotros/pasarela.webp" alt="Vestido Rubí">
+                                                                <img class="secondary-image" src="https://images.unsplash.com/photo-1539008835657-9e8e9680c956?auto=format&fit=crop&w=800&q=80" alt="Detalle Rubí">
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <h3>Rubí</h3>
+                                                                <p class="detail">Rojo vino · Talla M</p>
+                                                                <p class="price mb-1">Bs 390 <del class="fs-6 text-secondary">Bs 430</del>
+                                                                </p>
+                                                                <span class="availability">Disponible</span>
+                                                                <div class="d-flex gap-2 mt-3">
+                                                                    <button class="btn btn-outline-gold flex-fill quick-view" data-name="Rubí" data-price="390" data-color="Rojo vino" data-size="M" data-image="https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=800&q=80">Vista rápida</button>
+                                                                    <a href="reserva-vestido.html?vestido=Rubí" class="btn btn-gold">Reservar</a>
+                                                                </div>
+                                                            </div>
+                                                        </article>
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-4 dress" data-name="Perla" data-category="quince" data-color="rosa" data-size="s" data-price="550" data-popular="4">
+                                                        <article class="card catalog-card">
+                                                            <button class="favorite-btn" aria-label="Agregar Perla a favoritos">
+                                                                <i class="fa-regular fa-heart">
+                                                                </i>
+                                                            </button>
+                                                            <span class="product-tag">Premium</span>
+                                                            <div class="product-image-wrap">
+                                                                <img src="https://images.unsplash.com/photo-1594552072238-b8a33785b261?auto=format&fit=crop&w=800&q=80" alt="Vestido Perla">
+                                                                <img class="secondary-image" src="https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?auto=format&fit=crop&w=800&q=80" alt="Detalle Perla">
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <h3>Perla</h3>
+                                                                <p class="detail">Rosa palo · Talla S</p>
+                                                                <p class="price mb-1">Bs 550</p>
+                                                                <span class="availability">Disponible</span>
+                                                                <div class="d-flex gap-2 mt-3">
+                                                                    <button class="btn btn-outline-gold flex-fill quick-view" data-name="Perla" data-price="550" data-color="Rosa palo" data-size="S" data-image="https://images.unsplash.com/photo-1594552072238-b8a33785b261?auto=format&fit=crop&w=800&q=80">Vista rápida</button>
+                                                                    <a href="reserva-vestido.html?vestido=Perla" class="btn btn-gold">Reservar</a>
+                                                                </div>
+                                                            </div>
+                                                        </article>
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-4 dress" data-name="Onyx" data-category="gala" data-color="negro" data-size="m l" data-price="430" data-popular="5">
+                                                        <article class="card catalog-card">
+                                                            <button class="favorite-btn" aria-label="Agregar Onyx a favoritos">
+                                                                <i class="fa-regular fa-heart">
+                                                                </i>
+                                                            </button>
+                                                            <div class="product-image-wrap">
+                                                                <img src="https://images.unsplash.com/photo-1612336307429-8a898d10e223?auto=format&fit=crop&w=800&q=80" alt="Vestido Onyx">
+                                                                <img class="secondary-image" src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=800&q=80" alt="Detalle Onyx">
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <h3>Onyx</h3>
+                                                                <p class="detail">Negro · Tallas M/L</p>
+                                                                <p class="price mb-1">Bs 430</p>
+                                                                <span class="availability">Disponible</span>
+                                                                <div class="d-flex gap-2 mt-3">
+                                                                    <button class="btn btn-outline-gold flex-fill quick-view" data-name="Onyx" data-price="430" data-color="Negro" data-size="M/L" data-image="https://images.unsplash.com/photo-1612336307429-8a898d10e223?auto=format&fit=crop&w=800&q=80">Vista rápida</button>
+                                                                    <a href="reserva-vestido.html?vestido=Onyx" class="btn btn-gold">Reservar</a>
+                                                                </div>
+                                                            </div>
+                                                        </article>
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-4 dress" data-name="Doré" data-category="gala" data-color="champagne" data-size="m" data-price="600" data-popular="6">
+                                                        <article class="card catalog-card">
+                                                            <span class="product-tag">Próximamente</span>
+                                                            <div class="product-image-wrap">
+                                                                <img src="https://images.unsplash.com/photo-1539008835657-9e8e9680c956?auto=format&fit=crop&w=800&q=80" alt="Vestido Doré">
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <h3>Doré</h3>
+                                                                <p class="detail">Dorado · Talla M</p>
+                                                                <p class="price mb-1">Bs 600</p>
+                                                                <span class="availability no">No disponible</span>
+                                                                <div class="d-flex gap-2 mt-3">
+                                                                    <button class="btn btn-outline-gold flex-fill quick-view" data-name="Doré" data-price="600" data-color="Dorado" data-size="M" data-image="https://images.unsplash.com/photo-1539008835657-9e8e9680c956?auto=format&fit=crop&w=800&q=80">Vista rápida</button>
+                                                                    <a href="reserva-vestido.html?vestido=Doré" class="btn btn-gold">Consultar</a>
+                                                                </div>
+                                                            </div>
+                                                        </article>
+                                                    </div>
+                                                </div>
+                                            </div>
+        </section>
+    </main>
+    <footer class="footer">
+        <div class="container">
+            <h4>IL SALONE</h4>
+            <p>Reserva la prueba de tu vestido y recibe asesoría de imagen.</p>
+            <hr>
+            <small>© 2026 Il Salone Lia Vincenzo</small>
+        </div>
+    </footer>
+    <div class="modal fade" id="dressModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalDressName">Vestido</h5>
+                    <button class="btn-close" data-bs-dismiss="modal">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-4">
+                        <div class="col-md-7">
+                            <img class="modal-gallery-main" id="modalDressImage" alt="Vestido seleccionado">
+                        </div>
+                        <div class="col-md-5">
+                            <span class="eyebrow">Vista rápida</span>
+                            <p class="mt-3" id="modalDressInfo">
+                            </p>
+                            <p class="price" id="modalDressPrice">
+                            </p>
+                            <p>
+                                <span class="availability">Disponible para prueba</span>
+                            </p>
+                            <button class="btn btn-outline-gold w-100 mb-2" id="shareDress">
+                                <i class="fa-solid fa-share-nodes me-2">
+                                </i>Compartir</button>
+                            <a class="btn btn-gold w-100" id="modalReserve">Reservar vestido</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const color = document.querySelector('#filterColor'),
+            size = document.querySelector('#filterSize'),
+            range = document.querySelector('#priceRange'),
+            sort = document.querySelector('#sortCatalog'),
+            grid = document.querySelector('#dresses'),
+            count = document.querySelector('#productCount');
+
+        function applyFilters() {
+            const max = +range.value;
+            document.querySelector('#priceValue').textContent = 'Bs ' + max;
+            let cards = [...document.querySelectorAll('.dress')];
+            cards.forEach(card => {
+                const visible = (color.value === 'all' || card.dataset.color === color.value) && (size.value === 'all' || card.dataset.size.includes(size.value)) && (+card.dataset.price <= max);
+                card.style.display = visible ? 'block' : 'none'
+            });
+            cards.sort((a, b) => sort.value === 'name' ? a.dataset.name.localeCompare(b.dataset.name) : sort.value === 'priceAsc' ? +a.dataset.price - +b.dataset.price : sort.value === 'priceDesc' ? +b.dataset.price - +a.dataset.price : +a.dataset.popular - +b.dataset.popular).forEach(card => grid.append(card));
+            count.textContent = cards.filter(card => card.style.display !== 'none').length
+        } [color, size, range, sort].forEach(input => input.addEventListener('input', applyFilters));
+        document.querySelector('#clearFilters').addEventListener('click', () => {
+            color.value = size.value = 'all';
+            range.value = 650;
+            sort.value = 'popular';
+            applyFilters()
+        });
+        document.querySelectorAll('.favorite-btn').forEach(button => button.addEventListener('click', () => {
+            button.classList.toggle('is-favorite');
+            button.querySelector('i').classList.toggle('fa-regular');
+            button.querySelector('i').classList.toggle('fa-solid')
+        }));
+        const modal = new bootstrap.Modal('#dressModal');
+        document.querySelectorAll('.quick-view').forEach(button => button.addEventListener('click', () => {
+            modal.show();
+            document.querySelector('#modalDressName').textContent = button.dataset.name;
+            document.querySelector('#modalDressImage').src = button.dataset.image;
+            document.querySelector('#modalDressInfo').textContent = 'Color: ' + button.dataset.color + ' · Talla: ' + button.dataset.size;
+            document.querySelector('#modalDressPrice').textContent = 'Bs ' + button.dataset.price;
+            document.querySelector('#modalReserve').href = 'reserva-vestido.html?vestido=' + encodeURIComponent(button.dataset.name)
+        }));
+        document.querySelector('#shareDress').addEventListener('click', async () => {
+            try {
+                await navigator.clipboard.writeText(location.href);
+                document.querySelector('#shareDress').innerHTML = '<i class="fa-solid fa-check me-2"></i>Enlace copiado'
+            } catch {}
+        });
+        applyFilters();
+    </script>
+    <script>
+        const categoryFilter = document.querySelector('#filterCategory');
+        categoryFilter.addEventListener('change', () => {
+            document.querySelectorAll('.dress').forEach(card => {
+                const matches = categoryFilter.value === 'all' || card.dataset.category === categoryFilter.value;
+                card.style.display = matches ? 'block' : 'none';
+            });
+            document.querySelector('#productCount').textContent = [...document.querySelectorAll('.dress')]
+                .filter(card => card.style.display !== 'none').length;
+        });
+    </script>
+    <div class="modal fade" id="favoritesModal" tabindex="-1" aria-labelledby="favoritesTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="favoritesTitle">Mis vestidos favoritos</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body" id="favoritesList"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        (() => {
+            const catalogKey = 'ilSaloneCatalog';
+            const favoriteKey = 'ilSaloneFavorites';
+            const cards = [...document.querySelectorAll('.dress')];
+            const getProduct = card => ({
+                name: card.dataset.name || card.querySelector('h3')?.textContent.trim(),
+                color: card.dataset.color || '',
+                size: card.dataset.size || '',
+                price: card.dataset.price || '',
+                image: card.querySelector('.product-image-wrap img')?.getAttribute('src') || '',
+                available: !card.querySelector('.availability.no')
+            });
+            const products = cards.map(getProduct).filter(product => product.name);
+            localStorage.setItem(catalogKey, JSON.stringify(products));
+            const readFavorites = () => JSON.parse(localStorage.getItem(favoriteKey) || '[]');
+            const saveFavorites = items => localStorage.setItem(favoriteKey, JSON.stringify(items));
+            const count = document.querySelector('#favoritesCount');
+            const list = document.querySelector('#favoritesList');
+            const updateFavorites = () => {
+                const favorites = readFavorites();
+                count.textContent = favorites.length;
+                list.innerHTML = favorites.length ? favorites.map(item => `
+                                <div class="d-flex gap-3 align-items-center border-bottom py-3">
+                                    <img src="${item.image}" alt="${item.name}" style="width:58px;height:78px;object-fit:cover">
+                                    <div class="flex-grow-1"><strong>${item.name}</strong><br><small>${item.color} · Talla ${item.size} · Bs ${item.price}</small></div>
+                                    <a class="btn btn-gold btn-sm" href="reserva-vestido.html?vestido=${encodeURIComponent(item.name)}">Reservar</a>
+                                </div>`).join('') : '<p class="text-center mb-0">Aún no agregaste vestidos a favoritos.</p>';
+                cards.forEach(card => {
+                    const product = getProduct(card);
+                    const active = favorites.some(item => item.name === product.name);
+                    const button = card.querySelector('.favorite-btn');
+                    button.classList.toggle('is-favorite', active);
+                    button.querySelector('i').className = active ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
+                });
+            };
+            cards.forEach(card => {
+                const favoriteButton = card.querySelector('.favorite-btn');
+                favoriteButton.addEventListener('click', () => {
+                    const product = getProduct(card);
+                    const favorites = readFavorites();
+                    const position = favorites.findIndex(item => item.name === product.name);
+                    position >= 0 ? favorites.splice(position, 1) : favorites.push(product);
+                    saveFavorites(favorites);
+                    updateFavorites();
+                });
+                card.querySelectorAll('a.btn-gold').forEach(link => link.addEventListener('click', event => {
+                    event.preventDefault();
+                    window.location.href = `reserva-vestido.html?vestido=${encodeURIComponent(getProduct(card).name)}`;
+                }));
+            });
+            updateFavorites();
+        })();
+    </script>
+    <script>
+        (() => {
+            const cards = [...document.querySelectorAll('.dress')];
+            const noviaNames = ['Jardín de Ensueño', 'Lía Cristal', 'Promesa Dorada', 'Amor Eterno', 'Estrellas de Velo', 'Aura Marfil', 'Encaje Real', 'Luz de Altar', 'Nube Nupcial'];
+            const pasarelaNames = ['Zafiro Imperial', 'Azul de Medianoche', 'Constelación', 'Eclipse Azul', 'Noche de Zafiro', 'Sirena Real', 'Océano de Luz', 'Azul Majestad', 'Cobalto Glam', 'Brillo Nocturno', 'Luna Azul', 'Diamante Marino', 'Reina Zafiro', 'Azul Celeste', 'Destello Imperial', 'Gala de Medianoche', 'Cielo de Cristal', 'Elegancia Azul', 'Estrella Marina', 'Nácar Azul', 'Aura Cobalto', 'Pasarela de Zafiro', 'Azul Celestial', 'Cristal Marino', 'Seda Azul', 'Brisa Imperial', 'Zafiro de Gala', 'Amanecer Azul', 'Noche Real', 'Velo de Zafiro'];
+            let novia = 0,
+                pasarela = 0;
+            cards.forEach(card => {
+                const isPasarela = card.dataset.category === 'pasarela';
+                const name = isPasarela ? pasarelaNames[pasarela++] || `Pasarela Azul ${pasarela}` : card.dataset.category === 'novia' ? noviaNames[novia++] || `Novia Elegante ${novia}` : card.dataset.name;
+                if (!name) return;
+                card.dataset.name = name;
+                const title = card.querySelector('h3');
+                if (title) title.textContent = name;
+                const quick = card.querySelector('.quick-view');
+                if (quick) quick.dataset.name = name;
+                const favorite = card.querySelector('.favorite-btn');
+                if (favorite) favorite.setAttribute('aria-label', `Agregar ${name} a favoritos`);
+                card.querySelectorAll('a[href*="reserva-vestido.html"]').forEach(link => link.href = `reserva-vestido.html?vestido=${encodeURIComponent(name)}`);
+            });
+            const products = cards.map(card => ({
+                name: card.dataset.name,
+                category: card.dataset.category,
+                color: card.dataset.color,
+                size: card.dataset.size,
+                price: card.dataset.price,
+                image: card.querySelector('img')?.getAttribute('src') || '',
+                available: !card.querySelector('.availability.no')
+            })).filter(product => product.name);
+            localStorage.setItem('ilSaloneCatalog', JSON.stringify(products));
+        })();
+    </script>
+</body>
+
+</html>
