@@ -9,16 +9,16 @@ const path = require("path");
 const app = express();
 const port = Number(process.env.PORT || 3000);
 const secret = process.env.JWT_SECRET;
-const mysqlEnabled = [
+let mysqlEnabled = [
   process.env.DB_HOST,
   process.env.DB_NAME,
   process.env.DB_USER,
   process.env.DB_PASSWORD,
 ].every(Boolean);
-const db = mysqlEnabled
+let db = mysqlEnabled
   ? null
   : new sqlite3.Database(path.join(__dirname, "database.db"));
-const mysqlPool = mysqlEnabled
+let mysqlPool = mysqlEnabled
   ? mysql.createPool({
       host: process.env.DB_HOST,
       port: Number(process.env.DB_PORT || 3306),
@@ -34,6 +34,18 @@ const mysqlPool = mysqlEnabled
           : undefined,
     })
   : null;
+
+function activateSQLiteFallback(reason) {
+  if (mysqlPool) {
+    mysqlPool.end().catch(() => {});
+  }
+  mysqlEnabled = false;
+  mysqlPool = null;
+  db = new sqlite3.Database(path.join(__dirname, "database.db"));
+  console.warn(
+    `No fue posible conectar con MySQL (${reason.code || reason.message}). Se inició SQLite temporalmente para mantener el sitio disponible.`,
+  );
+}
 
 if (!secret || !process.env.ADMIN_USER || !process.env.ADMIN_PASSWORD) {
   throw new Error(
@@ -90,7 +102,12 @@ function error(response, value) {
 
 async function setup() {
   if (mysqlEnabled) {
-    await mysqlPool.query("SELECT 1");
+    try {
+      await mysqlPool.query("SELECT 1");
+    } catch (connectionError) {
+      activateSQLiteFallback(connectionError);
+      return setup();
+    }
     for (const sql of [
       `CREATE TABLE IF NOT EXISTS usuarios_admin (id INT AUTO_INCREMENT PRIMARY KEY,nombre VARCHAR(120) NOT NULL,usuario VARCHAR(80) NOT NULL UNIQUE,contrasena_hash VARCHAR(255) NOT NULL,rol VARCHAR(40) NOT NULL DEFAULT 'administrador')`,
       `CREATE TABLE IF NOT EXISTS clientes (id INT AUTO_INCREMENT PRIMARY KEY,nombre VARCHAR(150) NOT NULL,telefono VARCHAR(30) NOT NULL,correo VARCHAR(150) UNIQUE NULL,fecha_nacimiento DATE NULL,creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`,
