@@ -533,6 +533,14 @@
           try {
             const rows = await api(config.api);
             const panel = content.querySelector(`#${id}`);
+            const primaryButton = panel.querySelector(
+              ".admin-header .admin-action",
+            );
+            if (primaryButton) {
+              primaryButton.dataset.crudCreate = id;
+              primaryButton.removeAttribute("data-action");
+              primaryButton.innerHTML = `<i class="fa-solid fa-plus me-1"></i>Registrar ${config.title}`;
+            }
             const tools = panel.querySelector(".admin-tools");
             tools.innerHTML = `<button class="btn btn-gold" data-crud-create="${id}"><i class="fa-solid fa-plus me-1"></i>Registrar ${config.title}</button><button class="btn btn-outline-gold" data-crud-refresh="${id}"><i class="fa-solid fa-rotate"></i> Actualizar</button>`;
             let table = panel.querySelector(".admin-table-wrap");
