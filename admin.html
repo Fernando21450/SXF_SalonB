@@ -610,10 +610,24 @@
           modal.show();
         };
         content.addEventListener("click", async (event) => {
+          const legacyCreate = event.target.closest(".admin-action[data-action]");
           const create = event.target.closest("[data-crud-create]");
           const refresh = event.target.closest("[data-crud-refresh]");
           const edit = event.target.closest("[data-crud-edit]");
           const remove = event.target.closest("[data-crud-delete]");
+          const legacySections = {
+            "Registrar cliente": "clients",
+            "Registrar servicio": "services",
+            "Registrar vestido": "dresses",
+          };
+          if (legacyCreate) {
+            const section = legacySections[legacyCreate.dataset.action];
+            if (section) {
+              event.preventDefault();
+              openForm(section);
+              return;
+            }
+          }
           if (create) openForm(create.dataset.crudCreate);
           if (refresh) draw(refresh.dataset.crudRefresh);
           if (edit)
