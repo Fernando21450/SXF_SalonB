@@ -1774,3 +1774,121 @@ body.is-loading {
     border-bottom: 0;
   }
 }
+
+/* Ajustes finales para celulares: ningún bloque debe superar el ancho visible. */
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+img,
+svg,
+video,
+iframe {
+  max-width: 100%;
+}
+
+.row > * {
+  min-width: 0;
+}
+
+@media (max-width: 575px) {
+  .container,
+  .container-fluid {
+    width: 100%;
+    max-width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+
+  .brand {
+    max-width: calc(100vw - 88px);
+    font-size: 1.08rem;
+  }
+
+  .brand small {
+    font-size: 0.4rem;
+    letter-spacing: 0.13em;
+  }
+
+  .page-hero,
+  .page-hero-catalogo {
+    min-height: 230px;
+    padding: 58px 0 42px;
+  }
+
+  .page-hero h1,
+  .page-hero-catalogo h1 {
+    font-size: clamp(2.1rem, 11vw, 3.05rem);
+    line-height: 0.95;
+  }
+
+  .catalog-card {
+    width: 100%;
+  }
+
+  .catalog-card .product-image-wrap {
+    aspect-ratio: 3 / 4;
+  }
+
+  .catalog-card .user-dress-img {
+    object-fit: contain;
+    object-position: center;
+  }
+
+  .catalog-card .card-body {
+    padding: 1rem;
+  }
+
+  .catalog-card .d-flex.gap-2 {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.55rem !important;
+  }
+
+  .catalog-card .btn-gold,
+  .catalog-card .quick-view {
+    width: 100%;
+    min-width: 0;
+    padding-right: 8px;
+    padding-left: 8px;
+  }
+
+  .gallery-item,
+  .service-card,
+  .testimonial-card,
+  .team-card {
+    max-width: 100%;
+  }
+
+  .gallery-item img,
+  .service-card img,
+  .team-card img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+
+  .carousel-control-prev,
+  .carousel-control-next {
+    width: 11%;
+  }
+
+  .modal-dialog {
+    width: auto;
+    max-width: calc(100% - 1rem);
+    margin: 0.5rem auto;
+  }
+
+  .modal-gallery-main {
+    height: min(62vh, 420px);
+    object-fit: contain;
+    background: #0d0d0d;
+  }
+
+  .map-responsive,
+  .map-responsive iframe {
+    min-height: 220px;
+  }
+}

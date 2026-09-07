@@ -1,7 +1,6 @@
 require("dotenv").config();
 const express = require("express");
 const sqlite3 = require("sqlite3").verbose();
-const mysql = require("mysql2/promise");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const path = require("path");
@@ -9,43 +8,7 @@ const path = require("path");
 const app = express();
 const port = Number(process.env.PORT || 3000);
 const secret = process.env.JWT_SECRET;
-let mysqlEnabled = [
-  process.env.DB_HOST,
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASSWORD,
-].every(Boolean);
-let db = mysqlEnabled
-  ? null
-  : new sqlite3.Database(path.join(__dirname, "database.db"));
-let mysqlPool = mysqlEnabled
-  ? mysql.createPool({
-      host: process.env.DB_HOST,
-      port: Number(process.env.DB_PORT || 3306),
-      database: process.env.DB_NAME,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      waitForConnections: true,
-      connectionLimit: 10,
-      charset: "utf8mb4",
-      ssl:
-        process.env.DB_SSL === "true"
-          ? { rejectUnauthorized: false }
-          : undefined,
-    })
-  : null;
-
-function activateSQLiteFallback(reason) {
-  if (mysqlPool) {
-    mysqlPool.end().catch(() => {});
-  }
-  mysqlEnabled = false;
-  mysqlPool = null;
-  db = new sqlite3.Database(path.join(__dirname, "database.db"));
-  console.warn(
-    `No fue posible conectar con MySQL (${reason.code || reason.message}). Se inició SQLite temporalmente para mantener el sitio disponible.`,
-  );
-}
+const db = new sqlite3.Database(path.join(__dirname, "database.db"));
 
 if (!secret || !process.env.ADMIN_USER || !process.env.ADMIN_PASSWORD) {
   throw new Error(
@@ -57,34 +20,25 @@ app.use(express.json());
 app.use(express.static(__dirname));
 
 const run = (sql, values = []) =>
-  mysqlEnabled
-    ? mysqlPool.execute(sql, values).then(([result]) => ({
-        id: result.insertId,
-        changes: result.affectedRows,
-      }))
-    : new Promise((resolve, reject) =>
-        db.run(sql, values, function (error) {
-          error
-            ? reject(error)
-            : resolve({ id: this.lastID, changes: this.changes });
-        }),
-      );
+  new Promise((resolve, reject) =>
+    db.run(sql, values, function (error) {
+      error
+        ? reject(error)
+        : resolve({ id: this.lastID, changes: this.changes });
+    }),
+  );
 const all = (sql, values = []) =>
-  mysqlEnabled
-    ? mysqlPool.execute(sql, values).then(([rows]) => rows)
-    : new Promise((resolve, reject) =>
-        db.all(sql, values, (error, rows) =>
-          error ? reject(error) : resolve(rows),
-        ),
-      );
+  new Promise((resolve, reject) =>
+    db.all(sql, values, (error, rows) =>
+      error ? reject(error) : resolve(rows),
+    ),
+  );
 const one = (sql, values = []) =>
-  mysqlEnabled
-    ? mysqlPool.execute(sql, values).then(([rows]) => rows[0])
-    : new Promise((resolve, reject) =>
-        db.get(sql, values, (error, row) =>
-          error ? reject(error) : resolve(row),
-        ),
-      );
+  new Promise((resolve, reject) =>
+    db.get(sql, values, (error, row) =>
+      error ? reject(error) : resolve(row),
+    ),
+  );
 
 function requireAuth(request, response, next) {
   const token = request.headers.authorization?.replace("Bearer ", "");
@@ -101,39 +55,6 @@ function error(response, value) {
 }
 
 async function setup() {
-  if (mysqlEnabled) {
-    try {
-      await mysqlPool.query("SELECT 1");
-    } catch (connectionError) {
-      activateSQLiteFallback(connectionError);
-      return setup();
-    }
-    for (const sql of [
-      `CREATE TABLE IF NOT EXISTS usuarios_admin (id INT AUTO_INCREMENT PRIMARY KEY,nombre VARCHAR(120) NOT NULL,usuario VARCHAR(80) NOT NULL UNIQUE,contrasena_hash VARCHAR(255) NOT NULL,rol VARCHAR(40) NOT NULL DEFAULT 'administrador')`,
-      `CREATE TABLE IF NOT EXISTS clientes (id INT AUTO_INCREMENT PRIMARY KEY,nombre VARCHAR(150) NOT NULL,telefono VARCHAR(30) NOT NULL,correo VARCHAR(150) UNIQUE NULL,fecha_nacimiento DATE NULL,creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`,
-      `CREATE TABLE IF NOT EXISTS servicios (id INT AUTO_INCREMENT PRIMARY KEY,nombre VARCHAR(150) NOT NULL,descripcion TEXT NULL,precio DECIMAL(10,2) NOT NULL DEFAULT 0,duracion_minutos INT NULL,activo TINYINT(1) NOT NULL DEFAULT 1)`,
-      `CREATE TABLE IF NOT EXISTS vestidos (id INT AUTO_INCREMENT PRIMARY KEY,nombre VARCHAR(150) NOT NULL,categoria VARCHAR(80) NULL,color VARCHAR(80) NULL,talla VARCHAR(40) NULL,precio DECIMAL(10,2) NOT NULL DEFAULT 0,imagen VARCHAR(255) NULL,disponible TINYINT(1) NOT NULL DEFAULT 1)`,
-      `CREATE TABLE IF NOT EXISTS reservas (id INT AUTO_INCREMENT PRIMARY KEY,cliente_id INT NOT NULL,tipo ENUM('servicio','vestido') NOT NULL,servicio_id INT NULL,vestido_id INT NULL,sucursal VARCHAR(150) NULL,fecha DATE NOT NULL,hora TIME NULL,estado VARCHAR(30) NOT NULL DEFAULT 'pendiente',notas TEXT NULL,creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,FOREIGN KEY(cliente_id) REFERENCES clientes(id),FOREIGN KEY(servicio_id) REFERENCES servicios(id),FOREIGN KEY(vestido_id) REFERENCES vestidos(id))`,
-      `CREATE TABLE IF NOT EXISTS pagos (id INT AUTO_INCREMENT PRIMARY KEY,reserva_id INT NOT NULL,monto DECIMAL(10,2) NOT NULL,tipo VARCHAR(50) NOT NULL,metodo VARCHAR(60) NULL,fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,FOREIGN KEY(reserva_id) REFERENCES reservas(id))`,
-      `CREATE TABLE IF NOT EXISTS cupones_cumpleanos (id INT AUTO_INCREMENT PRIMARY KEY,cliente_id INT NOT NULL,codigo VARCHAR(80) NOT NULL UNIQUE,descuento INT NOT NULL DEFAULT 15,fecha_generacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,usado TINYINT(1) NOT NULL DEFAULT 0,FOREIGN KEY(cliente_id) REFERENCES clientes(id))`,
-    ])
-      await run(sql);
-    const user = await one("SELECT id FROM usuarios_admin WHERE usuario=?", [
-      process.env.ADMIN_USER,
-    ]);
-    if (!user) {
-      await run(
-        "INSERT INTO usuarios_admin(nombre,usuario,contrasena_hash) VALUES (?,?,?)",
-        [
-          "Administración Il Salone",
-          process.env.ADMIN_USER,
-          await bcrypt.hash(process.env.ADMIN_PASSWORD, 12),
-        ],
-      );
-    }
-    console.log("Base de datos activa: MySQL");
-    return;
-  }
   await run("PRAGMA foreign_keys = ON");
   for (const sql of [
     `CREATE TABLE IF NOT EXISTS usuarios_admin (id INTEGER PRIMARY KEY AUTOINCREMENT,nombre TEXT NOT NULL,usuario TEXT UNIQUE NOT NULL,contrasena_hash TEXT NOT NULL,rol TEXT DEFAULT 'administrador')`,
@@ -310,9 +231,7 @@ app.get("/api/dashboard", requireAuth, async (_, res) => {
     const queries = [
       "SELECT COUNT(*) total FROM clientes",
       "SELECT COUNT(*) total FROM reservas",
-      mysqlEnabled
-        ? "SELECT COUNT(*) total FROM reservas WHERE fecha=CURDATE()"
-        : "SELECT COUNT(*) total FROM reservas WHERE fecha=date('now','localtime')",
+      "SELECT COUNT(*) total FROM reservas WHERE fecha=date('now','localtime')",
       "SELECT COUNT(*) total FROM vestidos WHERE disponible=1",
       "SELECT COUNT(*) total FROM servicios WHERE activo=1",
     ];
@@ -473,16 +392,12 @@ app.post("/api/pagos", requireAuth, async (req, res) => {
 app.get("/api/cumpleanos/hoy", requireAuth, async (_, res) => {
   try {
     const clients = await all(
-      mysqlEnabled
-        ? "SELECT * FROM clientes WHERE DATE_FORMAT(fecha_nacimiento,'%m-%d')=DATE_FORMAT(CURDATE(),'%m-%d')"
-        : "SELECT * FROM clientes WHERE strftime('%m-%d',fecha_nacimiento)=strftime('%m-%d','now','localtime')",
+      "SELECT * FROM clientes WHERE strftime('%m-%d',fecha_nacimiento)=strftime('%m-%d','now','localtime')",
     );
     const coupons = [];
     for (const client of clients) {
       let coupon = await one(
-        mysqlEnabled
-          ? "SELECT * FROM cupones_cumpleanos WHERE cliente_id=? AND DATE(fecha_generacion)=CURDATE()"
-          : "SELECT * FROM cupones_cumpleanos WHERE cliente_id=? AND date(fecha_generacion)=date('now','localtime')",
+        "SELECT * FROM cupones_cumpleanos WHERE cliente_id=? AND date(fecha_generacion)=date('now','localtime')",
         [client.id],
       );
       if (!coupon) {
