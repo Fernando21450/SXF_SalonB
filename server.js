@@ -388,6 +388,26 @@ app.post("/api/pagos", requireAuth, async (req, res) => {
     error(res, value);
   }
 });
+app.put("/api/pagos/:id", requireAuth, async (req, res) => {
+  try {
+    const b = req.body;
+    await run(
+      "UPDATE pagos SET reserva_id=?,monto=?,tipo=?,metodo=? WHERE id=?",
+      [b.reserva_id, b.monto, b.tipo, b.metodo || null, req.params.id],
+    );
+    res.json({ mensaje: "Pago actualizado" });
+  } catch (value) {
+    error(res, value);
+  }
+});
+app.delete("/api/pagos/:id", requireAuth, async (req, res) => {
+  try {
+    await run("DELETE FROM pagos WHERE id=?", [req.params.id]);
+    res.json({ mensaje: "Pago eliminado" });
+  } catch (value) {
+    error(res, value);
+  }
+});
 
 app.get("/api/cumpleanos/hoy", requireAuth, async (_, res) => {
   try {

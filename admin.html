@@ -492,6 +492,41 @@
               "disponible",
             ],
           },
+          reservations: {
+            api: "reservas",
+            title: "reserva",
+            fields: [
+              ["cliente_id", "Cliente", "client-select", true],
+              ["tipo", "Tipo de reserva", "type-select", true],
+              ["servicio_id", "Servicio (si corresponde)", "service-select"],
+              ["vestido_id", "Vestido (si corresponde)", "dress-select"],
+              ["sucursal", "Sucursal", "text"],
+              ["fecha", "Fecha", "date", true],
+              ["hora", "Hora", "time"],
+              ["estado", "Estado", "status-select"],
+              ["notas", "Notas", "textarea"],
+            ],
+            columns: [
+              "cliente",
+              "tipo",
+              "servicio",
+              "vestido",
+              "fecha",
+              "hora",
+              "estado",
+            ],
+          },
+          payments: {
+            api: "pagos",
+            title: "pago",
+            fields: [
+              ["reserva_id", "Reserva", "reservation-select", true],
+              ["monto", "Monto (Bs)", "number", true],
+              ["tipo", "Tipo de pago", "text", true],
+              ["metodo", "Método de pago", "text"],
+            ],
+            columns: ["cliente", "monto", "tipo", "metodo", "fecha"],
+          },
         };
         let activePanel = "";
         const content = document.querySelector(".admin-content");
@@ -557,22 +592,69 @@
             showMessage(id, error.message, true);
           }
         };
-        const openForm = (id, row = {}) => {
+        const selectChoices = async (type) => {
+          if (type === "client-select") {
+            return (await api("clientes")).map((client) => [
+              client.id,
+              `${client.nombre} · ${client.telefono}`,
+            ]);
+          }
+          if (type === "service-select") {
+            return (await api("servicios")).map((service) => [
+              service.id,
+              `${service.nombre} · Bs ${service.precio}`,
+            ]);
+          }
+          if (type === "dress-select") {
+            return (await api("vestidos")).map((dress) => [
+              dress.id,
+              `${dress.nombre} · Talla ${dress.talla || "por definir"}`,
+            ]);
+          }
+          if (type === "reservation-select") {
+            return (await api("reservas")).map((reservation) => [
+              reservation.id,
+              `#${reservation.id} · ${reservation.cliente} · ${reservation.fecha}`,
+            ]);
+          }
+          if (type === "type-select") {
+            return [
+              ["servicio", "Servicio"],
+              ["vestido", "Vestido"],
+            ];
+          }
+          if (type === "status-select") {
+            return [
+              ["pendiente", "Pendiente"],
+              ["confirmada", "Confirmada"],
+              ["cancelada", "Cancelada"],
+            ];
+          }
+          return [];
+        };
+        const openForm = async (id, row = {}) => {
           const config = definitions[id];
           const existing = document.querySelector("#crudModal");
           existing?.remove();
-          const fields = config.fields
-            .map(([key, text, type, required]) => {
+          const fields = (
+            await Promise.all(
+              config.fields.map(async ([key, text, type, required]) => {
               const value = escape(row[key] ?? (type === "select" ? 1 : ""));
+              const choices = type.endsWith("-select")
+                ? await selectChoices(type)
+                : [];
               const input =
                 type === "textarea"
                   ? `<textarea class="form-control" id="crud-${key}" ${required ? "required" : ""}>${value}</textarea>`
                   : type === "select"
                     ? `<select class="form-select" id="crud-${key}"><option value="1" ${Number(value) ? "selected" : ""}>Sí</option><option value="0" ${!Number(value) ? "selected" : ""}>No</option></select>`
+                    : type.endsWith("-select")
+                      ? `<select class="form-select" id="crud-${key}" ${required ? "required" : ""}><option value="">Seleccionar...</option>${choices.map(([optionValue, optionText]) => `<option value="${escape(optionValue)}" ${String(value) === String(optionValue) ? "selected" : ""}>${escape(optionText)}</option>`).join("")}</select>`
                     : `<input class="form-control" id="crud-${key}" type="${type}" value="${value}" ${required ? "required" : ""}>`;
               return `<div class="col-md-6"><label class="form-label" for="crud-${key}">${text}</label>${input}</div>`;
-            })
-            .join("");
+              }),
+            )
+          ).join("");
           document.body.insertAdjacentHTML(
             "beforeend",
             `<div class="modal fade" id="crudModal" tabindex="-1"><div class="modal-dialog modal-lg modal-dialog-scrollable"><form class="modal-content" id="crudForm"><div class="modal-header"><h5 class="modal-title">${row.id ? "Editar" : "Registrar"} ${config.title}</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="row g-3">${fields}</div><p class="text-danger small mt-3 mb-0" id="crudError"></p></div><div class="modal-footer"><button class="btn btn-outline-gold" type="button" data-bs-dismiss="modal">Cancelar</button><button class="btn btn-gold" type="submit">Guardar</button></div></form></div></div>`,
@@ -620,6 +702,8 @@
             "Registrar cliente": "clients",
             "Registrar servicio": "services",
             "Registrar vestido": "dresses",
+            "Registrar reserva": "reservations",
+            "Registrar anticipo": "payments",
           };
           if (legacyCreate) {
             const section = legacySections[legacyCreate.dataset.action];
