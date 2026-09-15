@@ -522,7 +522,7 @@
             fields: [
               ["reserva_id", "Reserva", "reservation-select", true],
               ["monto", "Monto (Bs)", "number", true],
-              ["tipo", "Tipo de pago", "text", true],
+              ["tipo", "Tipo de pago", "payment-type", true],
               ["metodo", "Método de pago", "text"],
             ],
             columns: ["cliente", "monto", "tipo", "metodo", "fecha"],
@@ -630,6 +630,12 @@
               ["cancelada", "Cancelada"],
             ];
           }
+          if (type === "payment-type") {
+            return [
+              ["anticipo", "Anticipo"],
+              ["pago final", "Pago final"],
+            ];
+          }
           return [];
         };
         const openForm = async (id, row = {}) => {
@@ -698,20 +704,18 @@
           const refresh = event.target.closest("[data-crud-refresh]");
           const edit = event.target.closest("[data-crud-edit]");
           const remove = event.target.closest("[data-crud-delete]");
-          const legacySections = {
+          const legacyPanels = {
             "Registrar cliente": "clients",
             "Registrar servicio": "services",
             "Registrar vestido": "dresses",
             "Registrar reserva": "reservations",
             "Registrar anticipo": "payments",
+            "Registrar pago": "payments",
           };
-          if (legacyCreate) {
-            const section = legacySections[legacyCreate.dataset.action];
-            if (section) {
-              event.preventDefault();
-              openForm(section);
-              return;
-            }
+          if (legacyCreate && legacyPanels[legacyCreate.dataset.action]) {
+            event.preventDefault();
+            openForm(legacyPanels[legacyCreate.dataset.action]);
+            return;
           }
           if (create) openForm(create.dataset.crudCreate);
           if (refresh) draw(refresh.dataset.crudRefresh);
