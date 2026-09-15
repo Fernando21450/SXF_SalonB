@@ -114,9 +114,10 @@ app.post("/api/solicitudes/servicio", async (req, res) => {
       return res
         .status(400)
         .json({ error: "Completa los campos obligatorios." });
-    let client = await one("SELECT id FROM clientes WHERE telefono=?", [
-      b.telefono,
-    ]);
+    let client = await one(
+      "SELECT id FROM clientes WHERE telefono=? OR (correo IS NOT NULL AND correo=?)",
+      [b.telefono, b.correo || null],
+    );
     if (!client) {
       const saved = await run(
         "INSERT INTO clientes(nombre,telefono,correo,fecha_nacimiento) VALUES(?,?,?,?)",
@@ -178,9 +179,10 @@ app.post("/api/solicitudes/vestido", async (req, res) => {
       return res
         .status(400)
         .json({ error: "La prueba debe ser anterior a la fecha del evento." });
-    let client = await one("SELECT id FROM clientes WHERE telefono=?", [
-      b.telefono,
-    ]);
+    let client = await one(
+      "SELECT id FROM clientes WHERE telefono=? OR (correo IS NOT NULL AND correo=?)",
+      [b.telefono, b.correo || null],
+    );
     if (client)
       await run(
         "UPDATE clientes SET nombre=?,correo=?,fecha_nacimiento=COALESCE(?,fecha_nacimiento) WHERE id=?",

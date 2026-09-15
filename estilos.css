@@ -1801,8 +1801,8 @@ video {
   }
 
   .payment-qr-image {
-    width: 170px;
-    height: 170px;
+    width: 112px !important;
+    height: 112px !important;
     align-self: center;
   }
 
@@ -1964,7 +1964,8 @@ video {
   display: flex;
   align-items: center;
   gap: 22px;
-  padding: 18px 20px;
+  max-width: 690px;
+  padding: 14px 18px;
   color: #eee4d4;
   background: linear-gradient(135deg, #211d18, #14120f);
   border: 1px solid var(--line);
@@ -1983,12 +1984,13 @@ video {
 }
 
 .payment-qr-image {
-  width: 140px;
-  height: 140px;
-  flex: 0 0 140px;
-  padding: 5px;
-  object-fit: cover;
+  width: 108px !important;
+  height: 108px !important;
+  flex: 0 0 108px;
+  padding: 4px;
+  object-fit: contain;
   background: #fff;
-  border: 1px solid var(--gold);
-  border-radius: 6px;
+  border: 2px solid #cba75e;
+  border-radius: 50%;
+  box-shadow: 0 0 0 5px rgba(203, 167, 94, 0.13);
 }
