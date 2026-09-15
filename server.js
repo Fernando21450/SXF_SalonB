@@ -248,6 +248,63 @@ app.get("/api/dashboard", requireAuth, async (_, res) => {
   }
 });
 
+app.get("/api/usuarios", requireAuth, async (_, res) => {
+  try {
+    res.json(
+      await all(
+        "SELECT id,nombre,usuario,rol FROM usuarios_admin ORDER BY id DESC",
+      ),
+    );
+  } catch (value) {
+    error(res, value);
+  }
+});
+
+app.post("/api/usuarios", requireAuth, async (req, res) => {
+  try {
+    const b = req.body;
+    if (!b.nombre || !b.usuario || !b.contrasena)
+      return res.status(400).json({ error: "Completa nombre, usuario y contraseña." });
+    const saved = await run(
+      "INSERT INTO usuarios_admin(nombre,usuario,contrasena_hash,rol) VALUES(?,?,?,?)",
+      [b.nombre, b.usuario, await bcrypt.hash(b.contrasena, 12), b.rol || "administrador"],
+    );
+    res.status(201).json({ id: saved.id });
+  } catch (value) {
+    error(res, value);
+  }
+});
+
+app.put("/api/usuarios/:id", requireAuth, async (req, res) => {
+  try {
+    const b = req.body;
+    if (!b.nombre || !b.usuario)
+      return res.status(400).json({ error: "Completa nombre y usuario." });
+    const fields = [b.nombre, b.usuario, b.rol || "administrador"];
+    let sql = "UPDATE usuarios_admin SET nombre=?,usuario=?,rol=?";
+    if (b.contrasena) {
+      sql += ",contrasena_hash=?";
+      fields.push(await bcrypt.hash(b.contrasena, 12));
+    }
+    fields.push(req.params.id);
+    await run(`${sql} WHERE id=?`, fields);
+    res.json({ mensaje: "Usuario actualizado" });
+  } catch (value) {
+    error(res, value);
+  }
+});
+
+app.delete("/api/usuarios/:id", requireAuth, async (req, res) => {
+  try {
+    if (Number(req.params.id) === Number(req.user.id))
+      return res.status(400).json({ error: "No puedes eliminar el usuario de tu sesión actual." });
+    await run("DELETE FROM usuarios_admin WHERE id=?", [req.params.id]);
+    res.json({ mensaje: "Usuario eliminado" });
+  } catch (value) {
+    error(res, value);
+  }
+});
+
 const entities = {
   clientes: ["nombre", "telefono", "correo", "fecha_nacimiento"],
   servicios: ["nombre", "descripcion", "precio", "duracion_minutos", "activo"],

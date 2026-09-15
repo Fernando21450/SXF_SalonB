@@ -169,6 +169,16 @@
                     />
                   </div>
                   <div class="col-12">
+                    <div class="payment-qr-card">
+                      <div>
+                        <span class="eyebrow">Pago por QR</span>
+                        <h3>Anticipo de reserva</h3>
+                        <p class="mb-0">Escanea el QR de Yape para realizar tu anticipo. Luego envía el comprobante por WhatsApp para validar el pago con el salón.</p>
+                      </div>
+                      <img src="imagenes/pagos/qr-yape-sofia-canaviri.jpeg" alt="Código QR Yape para pago de anticipo" class="payment-qr-image" />
+                    </div>
+                  </div>
+                  <div class="col-12">
                     <div id="dressWarning" class="small text-danger"></div>
                     <button class="btn btn-gold mt-2" type="submit">
                       Confirmar reserva de vestido
@@ -203,28 +213,14 @@
         const today = new Date().toISOString().slice(0, 10);
         form.querySelector("#eventDate").min = today;
         form.querySelector("#tryDate").min = today;
-        const catalog = JSON.parse(
-          localStorage.getItem("ilSaloneCatalog") || "[]",
-        );
+        const catalog = JSON.parse(localStorage.getItem("ilSaloneCatalog") || "[]");
         let dresses = catalog.filter(
           (dress, index, list) =>
             dress.name &&
             list.findIndex((item) => item.name === dress.name) === index,
         );
         const requested = new URLSearchParams(location.search).get("vestido");
-        if (dresses.length) {
-          select.innerHTML = '<option value="">Selecciona un vestido</option>';
-          dresses.forEach((dress) => {
-            const option = new Option(
-              `${dress.name} · ${dress.color}`,
-              dress.name,
-            );
-            option.disabled = !dress.available;
-            select.add(option);
-          });
-          if (requested && dresses.some((dress) => dress.name === requested))
-            select.value = requested;
-        } else {
+        if (!dresses.length) {
           dresses = [...select.options]
             .filter((option) => option.value)
             .map((option) => {
@@ -234,10 +230,19 @@
                 color: color || "Por definir",
                 size: size || "Por definir",
                 price: (price || "0").replace("Bs ", ""),
-                available: !option.disabled,
+                available: true,
               };
             });
         }
+        select.innerHTML = '<option value="">Selecciona un vestido</option>';
+        dresses.forEach((dress) => {
+          const option = new Option(`${dress.name} · ${dress.color}`, dress.name);
+          option.disabled = dress.available === false;
+          select.add(option);
+        });
+        const normalize = (value) => String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        const requestedDress = dresses.find((dress) => normalize(dress.name) === normalize(requested));
+        if (requestedDress) select.value = requestedDress.name;
         const selected = () =>
           dresses.find((dress) => dress.name === select.value);
         const updatePrice = () => {
@@ -257,7 +262,7 @@
             return;
           }
           const dress = selected();
-          if (!dress || !dress.available) {
+          if (!dress || dress.available === false) {
             warning.textContent = "Selecciona un vestido disponible.";
             return;
           }

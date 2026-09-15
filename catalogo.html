@@ -2484,9 +2484,6 @@
                             <p>
                                 <span class="availability">Disponible para prueba</span>
                             </p>
-                            <button class="btn btn-outline-gold w-100 mb-2" id="shareDress">
-                                <i class="fa-solid fa-share-nodes me-2">
-                                </i>Compartir</button>
                             <a class="btn btn-gold w-100" id="modalReserve">Reservar vestido</a>
                         </div>
                     </div>
@@ -2523,34 +2520,16 @@
         });
         const modal = new bootstrap.Modal('#dressModal');
         document.querySelectorAll('.quick-view').forEach(button => button.addEventListener('click', () => {
-            const card = button.closest('.dress');
             modal.show();
             document.querySelector('#modalDressName').textContent = button.dataset.name;
-            document.querySelector('#modalDressImage').src = card.querySelector('.user-dress-img').src;
+            document.querySelector('#modalDressImage').src = button.dataset.image;
+            document.querySelector('#modalDressImage').onerror = event => {
+                event.currentTarget.src = button.closest('.dress').querySelector('.user-dress-img').src;
+            };
             document.querySelector('#modalDressInfo').textContent = 'Color: ' + button.dataset.color + ' · Talla: ' + button.dataset.size;
             document.querySelector('#modalDressPrice').textContent = 'Bs ' + button.dataset.price;
             document.querySelector('#modalReserve').href = 'reserva-vestido.html?vestido=' + encodeURIComponent(button.dataset.name)
         }));
-        document.querySelector('#shareDress').addEventListener('click', async () => {
-            const name = document.querySelector('#modalDressName').textContent;
-            const url = `${location.origin}${location.pathname}?vestido=${encodeURIComponent(name)}`;
-            const button = document.querySelector('#shareDress');
-            try {
-                if (navigator.share) {
-                    await navigator.share({
-                        title: `Vestido ${name} | Il Salone Lia Vincenzo`,
-                        text: `Mira este vestido disponible en Il Salone Lia Vincenzo: ${name}.`,
-                        url
-                    });
-                    return;
-                }
-                await navigator.clipboard.writeText(url);
-                button.innerHTML = '<i class="fa-solid fa-check me-2"></i>Enlace copiado';
-                setTimeout(() => button.innerHTML = '<i class="fa-solid fa-share-nodes me-2"></i>Compartir', 2000);
-            } catch (error) {
-                if (error.name !== 'AbortError') button.innerHTML = '<i class="fa-solid fa-link me-2"></i>No se pudo copiar';
-            }
-        });
         applyFilters();
     </script>
     <div class="modal fade" id="favoritesModal" tabindex="-1" aria-labelledby="favoritesTitle" aria-hidden="true">

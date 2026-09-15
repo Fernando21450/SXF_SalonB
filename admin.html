@@ -271,6 +271,14 @@
                 Registrar anticipo
               </button>
             </div>
+            <div class="payment-qr-card mt-3">
+              <div>
+                <span class="eyebrow">QR de pagos</span>
+                <h3>Yape · Sofía Canaviri Mamani</h3>
+                <p class="mb-0">Muestra este QR al registrar un anticipo o pago final. Verifica el comprobante antes de confirmar el pago.</p>
+              </div>
+              <img src="imagenes/pagos/qr-yape-sofia-canaviri.jpeg" alt="Código QR Yape para cobros" class="payment-qr-image">
+            </div>
             <div class="admin-tools">
               <button
                 class="btn btn-outline-gold admin-action"
@@ -527,6 +535,17 @@
             ],
             columns: ["cliente", "monto", "tipo", "metodo", "fecha"],
           },
+          users: {
+            api: "usuarios",
+            title: "usuario administrador",
+            fields: [
+              ["nombre", "Nombre completo", "text", true],
+              ["usuario", "Usuario", "text", true],
+              ["contrasena", "Contraseña", "password", true],
+              ["rol", "Rol", "role-select", true],
+            ],
+            columns: ["nombre", "usuario", "rol"],
+          },
         };
         let activePanel = "";
         const content = document.querySelector(".admin-content");
@@ -636,6 +655,12 @@
               ["pago final", "Pago final"],
             ];
           }
+          if (type === "role-select") {
+            return [
+              ["administrador", "Administrador"],
+              ["asistente", "Asistente"],
+            ];
+          }
           return [];
         };
         const openForm = async (id, row = {}) => {
@@ -646,17 +671,18 @@
             await Promise.all(
               config.fields.map(async ([key, text, type, required]) => {
               const value = escape(row[key] ?? (type === "select" ? 1 : ""));
+              const isRequired = required && !(row.id && key === "contrasena");
               const choices = type.endsWith("-select")
                 ? await selectChoices(type)
                 : [];
               const input =
                 type === "textarea"
-                  ? `<textarea class="form-control" id="crud-${key}" ${required ? "required" : ""}>${value}</textarea>`
+                  ? `<textarea class="form-control" id="crud-${key}" ${isRequired ? "required" : ""}>${value}</textarea>`
                   : type === "select"
                     ? `<select class="form-select" id="crud-${key}"><option value="1" ${Number(value) ? "selected" : ""}>Sí</option><option value="0" ${!Number(value) ? "selected" : ""}>No</option></select>`
                     : type.endsWith("-select")
-                      ? `<select class="form-select" id="crud-${key}" ${required ? "required" : ""}><option value="">Seleccionar...</option>${choices.map(([optionValue, optionText]) => `<option value="${escape(optionValue)}" ${String(value) === String(optionValue) ? "selected" : ""}>${escape(optionText)}</option>`).join("")}</select>`
-                    : `<input class="form-control" id="crud-${key}" type="${type}" value="${value}" ${required ? "required" : ""}>`;
+                      ? `<select class="form-select" id="crud-${key}" ${isRequired ? "required" : ""}><option value="">Seleccionar...</option>${choices.map(([optionValue, optionText]) => `<option value="${escape(optionValue)}" ${String(value) === String(optionValue) ? "selected" : ""}>${escape(optionText)}</option>`).join("")}</select>`
+                    : `<input class="form-control" id="crud-${key}" type="${type}" value="${value}" ${isRequired ? "required" : ""}>`;
               return `<div class="col-md-6"><label class="form-label" for="crud-${key}">${text}</label>${input}</div>`;
               }),
             )
@@ -711,6 +737,7 @@
             "Registrar reserva": "reservations",
             "Registrar anticipo": "payments",
             "Registrar pago": "payments",
+            "Registrar usuario": "users",
           };
           if (legacyCreate && legacyPanels[legacyCreate.dataset.action]) {
             event.preventDefault();
@@ -720,12 +747,13 @@
           if (create) openForm(create.dataset.crudCreate);
           if (refresh) draw(refresh.dataset.crudRefresh);
           if (edit)
-            openForm(
-              edit.dataset.crudEdit,
-              content
+            {
+              const editing = content
                 .querySelector(`#${edit.dataset.crudEdit}`)
-                ._rows.find((row) => String(row.id) === edit.dataset.id),
-            );
+                ._rows.find((row) => String(row.id) === edit.dataset.id);
+              if (edit.dataset.crudEdit === "users") editing.contrasena = "";
+              openForm(edit.dataset.crudEdit, editing);
+            }
           if (remove) {
             const id = remove.dataset.crudDelete;
             if (
