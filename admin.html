@@ -572,7 +572,7 @@
             const rows = await api(config.api);
             const panel = content.querySelector(`#${id}`);
             const primaryButton = panel.querySelector(
-              ".admin-header .admin-action",
+              ".admin-section-title .admin-action",
             );
             if (primaryButton) {
               primaryButton.dataset.crudCreate = id;
