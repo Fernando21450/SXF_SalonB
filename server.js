@@ -222,8 +222,8 @@ app.post("/api/solicitudes/servicio", async (req, res) => {
       client = { id: saved.id };
     } else
       await run(
-        "UPDATE clientes SET nombre=?,correo=?,fecha_nacimiento=COALESCE(?,fecha_nacimiento) WHERE id=?",
-        [b.nombre, b.correo || null, b.fecha_nacimiento || null, client.id],
+        "UPDATE clientes SET nombre=?,fecha_nacimiento=COALESCE(?,fecha_nacimiento) WHERE id=?",
+        [b.nombre, b.fecha_nacimiento || null, client.id],
       );
     let service = await one(
       "SELECT id FROM servicios WHERE nombre=? AND activo=1",
@@ -281,8 +281,8 @@ app.post("/api/solicitudes/vestido", async (req, res) => {
     );
     if (client)
       await run(
-        "UPDATE clientes SET nombre=?,correo=?,fecha_nacimiento=COALESCE(?,fecha_nacimiento) WHERE id=?",
-        [b.nombre, b.correo || null, b.fecha_nacimiento || null, client.id],
+        "UPDATE clientes SET nombre=?,fecha_nacimiento=COALESCE(?,fecha_nacimiento) WHERE id=?",
+        [b.nombre, b.fecha_nacimiento || null, client.id],
       );
     else {
       const saved = await run(
