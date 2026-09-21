@@ -91,6 +91,22 @@
                     >
                   </div>
                   <div class="col-md-6">
+                    <label class="form-label" for="dressSizeSummary"
+                      >Talla del vestido</label
+                    >
+                    <div
+                      class="price-summary"
+                      id="dressSizeSummary"
+                      aria-live="polite"
+                    >
+                      Selecciona un vestido para ver su talla.
+                    </div>
+                    <small class="form-note"
+                      >La talla se asigna automáticamente según el vestido
+                      elegido.</small
+                    >
+                  </div>
+                  <div class="col-md-6">
                     <label class="form-label" for="eventDate"
                       >Fecha del evento</label
                     >
@@ -169,16 +185,6 @@
                     />
                   </div>
                   <div class="col-12">
-                    <div class="payment-qr-card">
-                      <div>
-                        <span class="eyebrow">Pago por QR</span>
-                        <h3>Anticipo de reserva</h3>
-                        <p class="mb-0">Escanea el QR de Yape para realizar tu anticipo. Luego envía el comprobante por WhatsApp para validar el pago con el salón.</p>
-                      </div>
-                      <img src="imagenes/pagos/qr-yape-sofia-canaviri.jpeg" alt="Código QR Yape para pago de anticipo" class="payment-qr-image" />
-                    </div>
-                  </div>
-                  <div class="col-12">
                     <div id="dressWarning" class="small text-danger"></div>
                     <button class="btn btn-gold mt-2" type="submit">
                       Confirmar reserva de vestido
@@ -204,23 +210,116 @@
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+      const f = document.querySelector("#dressForm"),
+        eventDate = document.querySelector("#eventDate"),
+        tryDate = document.querySelector("#tryDate"),
+        warn = document.querySelector("#dressWarning"),
+        box = document.querySelector("#dressConfirmation"),
+        today = new Date().toISOString().split("T")[0];
+      eventDate.min = tryDate.min = today;
+      const requested = new URLSearchParams(location.search).get("vestido");
+      if (requested) {
+        [...document.querySelector("#dress").options]
+          .find((o) => o.value.startsWith(requested))
+          ?.setAttribute("selected", "selected");
+      }
+      f.addEventListener("submit", (e) => {
+        e.preventDefault();
+        box.style.display = "none";
+        warn.textContent = "";
+        if (!f.checkValidity()) {
+          f.classList.add("was-validated");
+          return;
+        }
+        if (tryDate.value >= eventDate.value) {
+          warn.textContent =
+            "La prueba debe programarse antes de la fecha del evento.";
+          return;
+        }
+        const code = "VT-" + Date.now().toString().slice(-6),
+          dateFormat = (s) => s.split("-").reverse().join("/");
+        box.innerHTML = `<h3 class="mb-2">¡Solicitud confirmada!</h3>
+            <p class="mb-1">
+                <b>${document.querySelector("#client").value}</b>, reservamos temporalmente el vestido <b>${document.querySelector("#dress").value.split(" · ")[0]}</b> para tu prueba.</p>
+                <p class="mb-0">Prueba: ${dateFormat(tryDate.value)}<br>Evento: ${dateFormat(eventDate.value)}<br>Código de solicitud: <b>${code}</b>
+                    <br>
+                    <small>La disponibilidad final se confirma al realizar la prueba en salón.</small>
+                </p>`;
+        box.style.display = "block";
+        box.scrollIntoView({ behavior: "smooth", block: "center" });
+        f.reset();
+        f.classList.remove("was-validated");
+      });
+    </script>
+    <script>
       (() => {
-        const form = document.querySelector("#dressForm");
+        const select = document.querySelector("#dress");
+        const requested = new URLSearchParams(window.location.search).get(
+          "vestido",
+        );
+        const catalog = JSON.parse(
+          localStorage.getItem("ilSaloneCatalog") || "[]",
+        );
+        const uniqueCatalog = catalog.filter(
+          (dress, index, array) =>
+            dress.name &&
+            array.findIndex((item) => item.name === dress.name) === index,
+        );
+
+        if (uniqueCatalog.length) select.innerHTML = '<option value="">Selecciona un vestido</option>';
+        uniqueCatalog.forEach((dress) => {
+          const option = document.createElement("option");
+          option.value = dress.name;
+          option.textContent = `${dress.name} · ${dress.color} · Talla ${dress.size} · Bs ${dress.price}`;
+          option.disabled = !dress.available;
+          select.appendChild(option);
+        });
+
+        if (requested) {
+          const selected = uniqueCatalog.find(
+            (dress) => dress.name === requested,
+          );
+          if (selected) {
+            select.value = selected.name;
+          }
+        }
+      })();
+    </script>
+    <script>
+      (() => {
+        const oldForm = document.querySelector("#dressForm");
+        const form = oldForm.cloneNode(true);
+        oldForm.replaceWith(form);
         const select = form.querySelector("#dress");
         const priceBox = document.querySelector("#dressPriceSummary");
+        const sizeBox = document.querySelector("#dressSizeSummary");
         const warning = document.querySelector("#dressWarning");
         const confirmation = document.querySelector("#dressConfirmation");
         const today = new Date().toISOString().slice(0, 10);
         form.querySelector("#eventDate").min = today;
         form.querySelector("#tryDate").min = today;
-        const catalog = JSON.parse(localStorage.getItem("ilSaloneCatalog") || "[]");
+        const catalog = JSON.parse(
+          localStorage.getItem("ilSaloneCatalog") || "[]",
+        );
         let dresses = catalog.filter(
           (dress, index, list) =>
             dress.name &&
             list.findIndex((item) => item.name === dress.name) === index,
         );
         const requested = new URLSearchParams(location.search).get("vestido");
-        if (!dresses.length) {
+        if (dresses.length) {
+          select.innerHTML = '<option value="">Selecciona un vestido</option>';
+          dresses.forEach((dress) => {
+            const option = new Option(
+              `${dress.name} · ${dress.color} · Talla ${dress.size}`,
+              dress.name,
+            );
+            option.disabled = !dress.available;
+            select.add(option);
+          });
+          if (requested && dresses.some((dress) => dress.name === requested))
+            select.value = requested;
+        } else {
           dresses = [...select.options]
             .filter((option) => option.value)
             .map((option) => {
@@ -228,21 +327,24 @@
               return {
                 name,
                 color: color || "Por definir",
-                size: size || "Por definir",
+                size: (size || "Por definir").replace("Talla ", ""),
                 price: (price || "0").replace("Bs ", ""),
-                available: true,
+                available: !option.disabled,
               };
             });
+          select.innerHTML = '<option value="">Selecciona un vestido</option>';
+          dresses.forEach((dress) => {
+            const option = new Option(
+              `${dress.name} · ${dress.color} · Talla ${dress.size}`,
+              dress.name,
+            );
+            option.disabled = dress.available === false;
+            select.add(option);
+          });
+          if (requested && dresses.some((dress) => dress.name === requested)) {
+            select.value = requested;
+          }
         }
-        select.innerHTML = '<option value="">Selecciona un vestido</option>';
-        dresses.forEach((dress) => {
-          const option = new Option(`${dress.name} · ${dress.color}`, dress.name);
-          option.disabled = dress.available === false;
-          select.add(option);
-        });
-        const normalize = (value) => String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-        const requestedDress = dresses.find((dress) => normalize(dress.name) === normalize(requested));
-        if (requestedDress) select.value = requestedDress.name;
         const selected = () =>
           dresses.find((dress) => dress.name === select.value);
         const updatePrice = () => {
@@ -250,6 +352,9 @@
           priceBox.textContent = dress
             ? `Bs ${dress.price} · ${dress.available ? "Disponible para prueba" : "No disponible"}`
             : "Selecciona un vestido para ver el precio.";
+          sizeBox.textContent = dress
+            ? `Talla ${dress.size}`
+            : "Selecciona un vestido para ver su talla.";
         };
         select.addEventListener("change", updatePrice);
         updatePrice();

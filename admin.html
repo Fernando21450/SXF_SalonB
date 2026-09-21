@@ -271,14 +271,6 @@
                 Registrar anticipo
               </button>
             </div>
-            <div class="payment-qr-card mt-3">
-              <div>
-                <span class="eyebrow">QR de pagos</span>
-                <h3>Yape · Sofía Canaviri Mamani</h3>
-                <p class="mb-0">Muestra este QR al registrar un anticipo o pago final. Verifica el comprobante antes de confirmar el pago.</p>
-              </div>
-              <img src="imagenes/pagos/qr-yape-sofia-canaviri.jpeg" alt="Código QR Yape para cobros" class="payment-qr-image">
-            </div>
             <div class="admin-tools">
               <button
                 class="btn btn-outline-gold admin-action"
@@ -325,7 +317,6 @@
         </div>
       </section>
     </main>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
       (() => {
         sessionStorage.removeItem("ilSaloneAdmin");
@@ -504,36 +495,28 @@
             api: "reservas",
             title: "reserva",
             fields: [
-              ["cliente_id", "Cliente", "client-select", true],
-              ["tipo", "Tipo de reserva", "type-select", true],
-              ["servicio_id", "Servicio (si corresponde)", "service-select"],
-              ["vestido_id", "Vestido (si corresponde)", "dress-select"],
+              ["cliente_id", "ID de cliente", "number", true],
+              ["tipo", "Tipo (servicio o vestido)", "text", true],
+              ["servicio_id", "ID de servicio", "number"],
+              ["vestido_id", "ID de vestido", "number"],
               ["sucursal", "Sucursal", "text"],
               ["fecha", "Fecha", "date", true],
               ["hora", "Hora", "time"],
-              ["estado", "Estado", "status-select"],
+              ["estado", "Estado", "text", true],
               ["notas", "Notas", "textarea"],
             ],
-            columns: [
-              "cliente",
-              "tipo",
-              "servicio",
-              "vestido",
-              "fecha",
-              "hora",
-              "estado",
-            ],
+            columns: ["cliente", "tipo", "servicio", "vestido", "fecha", "hora", "estado"],
           },
           payments: {
             api: "pagos",
             title: "pago",
             fields: [
-              ["reserva_id", "Reserva", "reservation-select", true],
+              ["reserva_id", "ID de reserva", "number", true],
               ["monto", "Monto (Bs)", "number", true],
-              ["tipo", "Tipo de pago", "payment-type", true],
-              ["metodo", "Método de pago", "text"],
+              ["tipo", "Tipo", "text", true],
+              ["metodo", "Método", "text"],
             ],
-            columns: ["cliente", "monto", "tipo", "metodo", "fecha"],
+            columns: ["cliente", "reserva_id", "monto", "tipo", "metodo", "fecha"],
           },
           users: {
             api: "usuarios",
@@ -541,8 +524,8 @@
             fields: [
               ["nombre", "Nombre completo", "text", true],
               ["usuario", "Usuario", "text", true],
-              ["contrasena", "Contraseña", "password", true],
-              ["rol", "Rol", "role-select", true],
+              ["contrasena", "Contraseña", "password"],
+              ["rol", "Rol", "text", true],
             ],
             columns: ["nombre", "usuario", "rol"],
           },
@@ -611,82 +594,23 @@
             showMessage(id, error.message, true);
           }
         };
-        const selectChoices = async (type) => {
-          if (type === "client-select") {
-            return (await api("clientes")).map((client) => [
-              client.id,
-              `${client.nombre} · ${client.telefono}`,
-            ]);
-          }
-          if (type === "service-select") {
-            return (await api("servicios")).map((service) => [
-              service.id,
-              `${service.nombre} · Bs ${service.precio}`,
-            ]);
-          }
-          if (type === "dress-select") {
-            return (await api("vestidos")).map((dress) => [
-              dress.id,
-              `${dress.nombre} · Talla ${dress.talla || "por definir"}`,
-            ]);
-          }
-          if (type === "reservation-select") {
-            return (await api("reservas")).map((reservation) => [
-              reservation.id,
-              `#${reservation.id} · ${reservation.cliente} · ${reservation.fecha}`,
-            ]);
-          }
-          if (type === "type-select") {
-            return [
-              ["servicio", "Servicio"],
-              ["vestido", "Vestido"],
-            ];
-          }
-          if (type === "status-select") {
-            return [
-              ["pendiente", "Pendiente"],
-              ["confirmada", "Confirmada"],
-              ["cancelada", "Cancelada"],
-            ];
-          }
-          if (type === "payment-type") {
-            return [
-              ["anticipo", "Anticipo"],
-              ["pago final", "Pago final"],
-            ];
-          }
-          if (type === "role-select") {
-            return [
-              ["administrador", "Administrador"],
-              ["asistente", "Asistente"],
-            ];
-          }
-          return [];
-        };
-        const openForm = async (id, row = {}) => {
+        const openForm = (id, row = {}) => {
           const config = definitions[id];
           const existing = document.querySelector("#crudModal");
           existing?.remove();
-          const fields = (
-            await Promise.all(
-              config.fields.map(async ([key, text, type, required]) => {
+          const fields = config.fields
+            .map(([key, text, type, required]) => {
               const value = escape(row[key] ?? (type === "select" ? 1 : ""));
-              const isRequired = required && !(row.id && key === "contrasena");
-              const choices = type.endsWith("-select")
-                ? await selectChoices(type)
-                : [];
+              const isRequired = required || (id === "users" && key === "contrasena" && !row.id);
               const input =
                 type === "textarea"
                   ? `<textarea class="form-control" id="crud-${key}" ${isRequired ? "required" : ""}>${value}</textarea>`
                   : type === "select"
                     ? `<select class="form-select" id="crud-${key}"><option value="1" ${Number(value) ? "selected" : ""}>Sí</option><option value="0" ${!Number(value) ? "selected" : ""}>No</option></select>`
-                    : type.endsWith("-select")
-                      ? `<select class="form-select" id="crud-${key}" ${isRequired ? "required" : ""}><option value="">Seleccionar...</option>${choices.map(([optionValue, optionText]) => `<option value="${escape(optionValue)}" ${String(value) === String(optionValue) ? "selected" : ""}>${escape(optionText)}</option>`).join("")}</select>`
                     : `<input class="form-control" id="crud-${key}" type="${type}" value="${value}" ${isRequired ? "required" : ""}>`;
               return `<div class="col-md-6"><label class="form-label" for="crud-${key}">${text}</label>${input}</div>`;
-              }),
-            )
-          ).join("");
+            })
+            .join("");
           document.body.insertAdjacentHTML(
             "beforeend",
             `<div class="modal fade" id="crudModal" tabindex="-1"><div class="modal-dialog modal-lg modal-dialog-scrollable"><form class="modal-content" id="crudForm"><div class="modal-header"><h5 class="modal-title">${row.id ? "Editar" : "Registrar"} ${config.title}</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="row g-3">${fields}</div><p class="text-danger small mt-3 mb-0" id="crudError"></p></div><div class="modal-footer"><button class="btn btn-outline-gold" type="button" data-bs-dismiss="modal">Cancelar</button><button class="btn btn-gold" type="submit">Guardar</button></div></form></div></div>`,
@@ -725,35 +649,19 @@
           modal.show();
         };
         content.addEventListener("click", async (event) => {
-          const legacyCreate = event.target.closest(".admin-action[data-action]");
           const create = event.target.closest("[data-crud-create]");
           const refresh = event.target.closest("[data-crud-refresh]");
           const edit = event.target.closest("[data-crud-edit]");
           const remove = event.target.closest("[data-crud-delete]");
-          const legacyPanels = {
-            "Registrar cliente": "clients",
-            "Registrar servicio": "services",
-            "Registrar vestido": "dresses",
-            "Registrar reserva": "reservations",
-            "Registrar anticipo": "payments",
-            "Registrar pago": "payments",
-            "Registrar usuario": "users",
-          };
-          if (legacyCreate && legacyPanels[legacyCreate.dataset.action]) {
-            event.preventDefault();
-            openForm(legacyPanels[legacyCreate.dataset.action]);
-            return;
-          }
           if (create) openForm(create.dataset.crudCreate);
           if (refresh) draw(refresh.dataset.crudRefresh);
           if (edit)
-            {
-              const editing = content
+            openForm(
+              edit.dataset.crudEdit,
+              content
                 .querySelector(`#${edit.dataset.crudEdit}`)
-                ._rows.find((row) => String(row.id) === edit.dataset.id);
-              if (edit.dataset.crudEdit === "users") editing.contrasena = "";
-              openForm(edit.dataset.crudEdit, editing);
-            }
+                ._rows.find((row) => String(row.id) === edit.dataset.id),
+            );
           if (remove) {
             const id = remove.dataset.crudDelete;
             if (

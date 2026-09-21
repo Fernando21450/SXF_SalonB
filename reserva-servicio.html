@@ -103,7 +103,7 @@
                   <div class="col-md-6">
                     <label class="form-label" for="time">Hora</label>
                     <select id="time" class="form-select" required>
-                      
+                      <option value="">Primero selecciona fecha</option>
                     </select>
                   </div>
                   <div class="col-12">
@@ -169,16 +169,6 @@
                     />
                   </div>
                   <div class="col-12">
-                    <div class="payment-qr-card">
-                      <div>
-                        <span class="eyebrow">Pago por QR</span>
-                        <h3>Anticipo de tu cita</h3>
-                        <p class="mb-0">Escanea el QR de Yape para realizar tu anticipo. Luego envía el comprobante por WhatsApp para validar el pago y tu cita.</p>
-                      </div>
-                      <img src="imagenes/pagos/qr-yape-sofia-canaviri.jpeg" alt="Código QR Yape para pago de servicio" class="payment-qr-image" />
-                    </div>
-                  </div>
-                  <div class="col-12">
                     <div id="availability" class="small text-danger"></div>
                   </div>
                   <div class="col-12">
@@ -206,35 +196,85 @@
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+      const date = document.querySelector("#date"),
+        time = document.querySelector("#time"),
+        form = document.querySelector("#serviceForm"),
+        notice = document.querySelector("#availability"),
+        confirmation = document.querySelector("#confirmation");
+      date.min = new Date().toISOString().split("T")[0];
+      const hours = [
+        "10:00",
+        "11:00",
+        "12:00",
+        "14:00",
+        "15:00",
+        "16:00",
+        "17:00",
+        "18:00",
+      ];
+      date.addEventListener("change", () => {
+        time.innerHTML = '<option value="">Selecciona una hora</option>';
+        notice.textContent = "";
+        if (!date.value) return;
+        const d = new Date(date.value + "T12:00:00");
+        if (d.getDay() === 0) {
+          notice.textContent = "No atendemos los domingos. Elige otra fecha.";
+          return;
+        }
+        hours.forEach((h) =>
+          time.insertAdjacentHTML(
+            "beforeend",
+            `<option value="${h}">${h}</option>`,
+          ),
+        );
+      });
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        confirmation.style.display = "none";
+        if (!form.checkValidity()) {
+          form.classList.add("was-validated");
+          return;
+        }
+        if (new Date(date.value + "T12:00:00").getDay() === 0) {
+          notice.textContent = "No atendemos los domingos.";
+          return;
+        }
+        const code = "IS-" + Date.now().toString().slice(-6);
+        confirmation.innerHTML = `<h3 class="mb-2">¡Reserva confirmada!</h3>
+            <p class="mb-1">
+                <b>${document.querySelector("#name").value}</b>, tu cita de <b>${document.querySelector("#service").value}</b> quedó registrada.</p>
+                <p class="mb-0">Sucursal: ${document.querySelector("#branch").value}<br>Fecha y hora: ${date.value.split("-").reverse().join("/")} · ${time.value}<br>Código de reserva: <b>${code}</b>
+                </p>`;
+        confirmation.style.display = "block";
+        confirmation.scrollIntoView({ behavior: "smooth", block: "center" });
+        form.reset();
+        time.innerHTML = '<option value="">Primero selecciona fecha</option>';
+        form.classList.remove("was-validated");
+      });
+    </script>
+    <script>
       (() => {
-        const form = document.querySelector("#serviceForm");
-        const date = form.querySelector("#date");
-        const time = form.querySelector("#time");
-        const notice = document.querySelector("#availability");
-        const confirmation = document.querySelector("#confirmation");
-        const hours = ["10:00", "11:00", "12:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
-
-        date.min = new Date().toISOString().slice(0, 10);
-        const loadHours = () => {
-          time.innerHTML = '<option value="">Selecciona una hora</option>';
-          notice.textContent = "";
-          if (!date.value) return;
-          if (new Date(`${date.value}T12:00:00`).getDay() === 0) {
-            notice.textContent = "No atendemos los domingos. Elige otra fecha.";
-            return;
-          }
-          hours.forEach((hour) => time.add(new Option(hour, hour)));
-        };
-        date.addEventListener("change", loadHours);
-        loadHours();
-
-        form.addEventListener("submit", async (event) => {
+        const originalForm = document.querySelector("#serviceForm");
+        const realForm = originalForm.cloneNode(true);
+        originalForm.replaceWith(realForm);
+        const dateInput = realForm.querySelector("#date");
+        const timeInput = realForm.querySelector("#time");
+        const availableHours = ["10:00", "11:00", "12:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
+        dateInput.min = new Date().toISOString().slice(0, 10);
+        dateInput.addEventListener("change", () => {
+          timeInput.innerHTML = '<option value="">Selecciona una hora</option>';
+          if (!dateInput.value) return;
+          if (new Date(`${dateInput.value}T12:00:00`).getDay() === 0) return;
+          availableHours.forEach((hour) => timeInput.add(new Option(hour, hour)));
+        });
+        const noticeBox = document.querySelector("#availability");
+        const confirmationBox = document.querySelector("#confirmation");
+        realForm.addEventListener("submit", async (event) => {
           event.preventDefault();
-          notice.textContent = "";
-          confirmation.style.display = "none";
-          if (!form.checkValidity() || !time.value) {
-            form.classList.add("was-validated");
-            if (!time.value) notice.textContent = "Selecciona una fecha y una hora disponible.";
+          noticeBox.textContent = "";
+          confirmationBox.style.display = "none";
+          if (!realForm.checkValidity()) {
+            realForm.classList.add("was-validated");
             return;
           }
           try {
@@ -242,27 +282,34 @@
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
-                nombre: form.querySelector("#name").value,
-                telefono: form.querySelector("#phone").value,
-                correo: form.querySelector("#email").value,
-                fecha_nacimiento: form.querySelector("#birthDate").value,
-                sucursal: form.querySelector("#branch").value,
-                servicio: form.querySelector("#service").value,
-                fecha: date.value,
-                hora: time.value,
-                notas: form.querySelector("#notes").value,
+                nombre: realForm.querySelector("#name").value,
+                telefono: realForm.querySelector("#phone").value,
+                correo: realForm.querySelector("#email").value,
+                fecha_nacimiento: realForm.querySelector("#birthDate").value,
+                sucursal: realForm.querySelector("#branch").value,
+                servicio: realForm.querySelector("#service").value,
+                fecha: realForm.querySelector("#date").value,
+                hora: realForm.querySelector("#time").value,
+                notas: realForm.querySelector("#notes").value,
               }),
             });
             const result = await response.json();
-            if (!response.ok) throw new Error(result.error || "No se pudo registrar la reserva.");
-            confirmation.innerHTML = `<h3 class="mb-2">¡Reserva registrada!</h3><p>Tu cita fue guardada correctamente.</p><p class="mb-0">Código: <b>${result.codigo}</b></p>`;
-            confirmation.style.display = "block";
-            confirmation.scrollIntoView({ behavior: "smooth", block: "center" });
-            form.reset();
-            form.classList.remove("was-validated");
-            time.innerHTML = '<option value="">Primero selecciona fecha</option>';
+            if (!response.ok)
+              throw new Error(
+                result.error || "No se pudo registrar la reserva.",
+              );
+            confirmationBox.innerHTML = `<h3 class="mb-2">¡Reserva registrada!</h3><p>Tu cita fue guardada correctamente.</p><p class="mb-0">Código: <b>${result.codigo}</b></p>`;
+            confirmationBox.style.display = "block";
+            confirmationBox.scrollIntoView({
+              behavior: "smooth",
+              block: "center",
+            });
+            realForm.reset();
+            realForm.classList.remove("was-validated");
+            document.querySelector("#time").innerHTML =
+              '<option value="">Primero selecciona fecha</option>';
           } catch (error) {
-            notice.textContent = error.message;
+            noticeBox.textContent = error.message;
           }
         });
       })();
