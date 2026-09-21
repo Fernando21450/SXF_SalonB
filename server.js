@@ -211,8 +211,8 @@ app.post("/api/solicitudes/servicio", async (req, res) => {
         .status(400)
         .json({ error: "Completa los campos obligatorios." });
     let client = await one(
-      "SELECT id FROM clientes WHERE telefono=? OR (correo IS NOT NULL AND correo=?)",
-      [b.telefono, b.correo || null],
+      "SELECT id FROM clientes WHERE correo=? OR telefono=? ORDER BY CASE WHEN correo=? THEN 0 ELSE 1 END LIMIT 1",
+      [b.correo || null, b.telefono, b.correo || null],
     );
     if (!client) {
       const saved = await run(
@@ -276,8 +276,8 @@ app.post("/api/solicitudes/vestido", async (req, res) => {
         .status(400)
         .json({ error: "La prueba debe ser anterior a la fecha del evento." });
     let client = await one(
-      "SELECT id FROM clientes WHERE telefono=? OR (correo IS NOT NULL AND correo=?)",
-      [b.telefono, b.correo || null],
+      "SELECT id FROM clientes WHERE correo=? OR telefono=? ORDER BY CASE WHEN correo=? THEN 0 ELSE 1 END LIMIT 1",
+      [b.correo || null, b.telefono, b.correo || null],
     );
     if (client)
       await run(
