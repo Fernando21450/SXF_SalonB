@@ -1,7 +1,12 @@
 require("dotenv").config();
 const express = require("express");
 const sqlite3 = require("sqlite3").verbose();
-const mysql = require("mysql2/promise");
+let mysql = null;
+try {
+  mysql = require("mysql2/promise");
+} catch {
+  // MySQL es opcional: el proyecto puede funcionar únicamente con SQLite.
+}
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const path = require("path");
@@ -9,12 +14,14 @@ const path = require("path");
 const app = express();
 const port = Number(process.env.PORT || 3000);
 const secret = process.env.JWT_SECRET;
-let mysqlEnabled = [
-  process.env.DB_HOST,
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASSWORD,
-].every(Boolean);
+let mysqlEnabled =
+  Boolean(mysql) &&
+  [
+    process.env.DB_HOST,
+    process.env.DB_NAME,
+    process.env.DB_USER,
+    process.env.DB_PASSWORD,
+  ].every(Boolean);
 let db = mysqlEnabled
   ? null
   : new sqlite3.Database(path.join(__dirname, "database.db"));
