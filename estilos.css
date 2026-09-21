@@ -1144,6 +1144,25 @@ body.is-loading {
   border-radius: 0;
 }
 
+/* Respaldo para los formularios administrativos si el CDN de Bootstrap falla. */
+#crudModal.show {
+  position: fixed;
+  inset: 0;
+  z-index: 1080;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.72);
+}
+
+#crudModal .modal-dialog {
+  width: min(92vw, 760px);
+  margin: 6vh auto;
+}
+
+#crudModal .modal-content {
+  display: block;
+  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.45);
+}
+
 .modal-header,
 .modal-footer {
   border-color: var(--line);

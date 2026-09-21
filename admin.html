@@ -317,6 +317,7 @@
         </div>
       </section>
     </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
       (() => {
         sessionStorage.removeItem("ilSaloneAdmin");
@@ -616,10 +617,31 @@
             `<div class="modal fade" id="crudModal" tabindex="-1"><div class="modal-dialog modal-lg modal-dialog-scrollable"><form class="modal-content" id="crudForm"><div class="modal-header"><h5 class="modal-title">${row.id ? "Editar" : "Registrar"} ${config.title}</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="row g-3">${fields}</div><p class="text-danger small mt-3 mb-0" id="crudError"></p></div><div class="modal-footer"><button class="btn btn-outline-gold" type="button" data-bs-dismiss="modal">Cancelar</button><button class="btn btn-gold" type="submit">Guardar</button></div></form></div></div>`,
           );
           const modalElement = document.querySelector("#crudModal");
-          const modal = new bootstrap.Modal(modalElement);
-          modalElement.addEventListener("hidden.bs.modal", () =>
-            modalElement.remove(),
-          );
+          const closeFallbackModal = () => {
+            modalElement.classList.remove("show");
+            modalElement.style.display = "none";
+            document.body.classList.remove("modal-open");
+            modalElement.remove();
+          };
+          const modal = window.bootstrap?.Modal
+            ? new window.bootstrap.Modal(modalElement)
+            : { hide: closeFallbackModal };
+          if (window.bootstrap?.Modal) {
+            modalElement.addEventListener("hidden.bs.modal", () =>
+              modalElement.remove(),
+            );
+            modal.show();
+          } else {
+            modalElement.classList.add("show");
+            modalElement.style.display = "block";
+            modalElement.setAttribute("aria-modal", "true");
+            document.body.classList.add("modal-open");
+            modalElement
+              .querySelectorAll('[data-bs-dismiss="modal"], .btn-close')
+              .forEach((button) =>
+                button.addEventListener("click", closeFallbackModal),
+              );
+          }
           document
             .querySelector("#crudForm")
             .addEventListener("submit", async (event) => {
@@ -646,7 +668,6 @@
                   error.message;
               }
             });
-          modal.show();
         };
         content.addEventListener("click", async (event) => {
           const create = event.target.closest("[data-crud-create]");
