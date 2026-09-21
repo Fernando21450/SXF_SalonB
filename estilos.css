@@ -1794,18 +1794,6 @@ video {
 }
 
 @media (max-width: 575px) {
-  .payment-qr-card {
-    align-items: flex-start;
-    flex-direction: column;
-    padding: 16px;
-  }
-
-  .payment-qr-image {
-    width: 112px !important;
-    height: 112px !important;
-    align-self: center;
-  }
-
   .container,
   .container-fluid {
     width: 100%;
@@ -1960,37 +1948,3 @@ video {
   }
 }
 
-.payment-qr-card {
-  display: flex;
-  align-items: center;
-  gap: 22px;
-  max-width: 690px;
-  padding: 14px 18px;
-  color: #eee4d4;
-  background: linear-gradient(135deg, #211d18, #14120f);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-}
-
-.payment-qr-card h3 {
-  margin: 4px 0 8px;
-  color: var(--gold-light);
-}
-
-.payment-qr-card p {
-  max-width: 520px;
-  color: #cfc4b2;
-  font-size: 0.82rem;
-}
-
-.payment-qr-image {
-  width: 108px !important;
-  height: 108px !important;
-  flex: 0 0 108px;
-  padding: 4px;
-  object-fit: contain;
-  background: #fff;
-  border: 2px solid #cba75e;
-  border-radius: 50%;
-  box-shadow: 0 0 0 5px rgba(203, 167, 94, 0.13);
-}
