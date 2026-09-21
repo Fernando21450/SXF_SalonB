@@ -275,6 +275,9 @@ app.post("/api/solicitudes/vestido", async (req, res) => {
       return res
         .status(400)
         .json({ error: "La prueba debe ser anterior a la fecha del evento." });
+    const dressName = b.vestido.nombre || b.vestido.name;
+    if (!dressName)
+      return res.status(400).json({ error: "Selecciona un vestido válido." });
     let client = await one(
       "SELECT id FROM clientes WHERE correo=? OR telefono=? ORDER BY CASE WHEN correo=? THEN 0 ELSE 1 END LIMIT 1",
       [b.correo || null, b.telefono, b.correo || null],
@@ -293,13 +296,13 @@ app.post("/api/solicitudes/vestido", async (req, res) => {
     }
     let dress = await one(
       "SELECT id,disponible FROM vestidos WHERE nombre=? AND COALESCE(imagen,'')=COALESCE(?, '')",
-      [b.vestido.nombre, b.vestido.imagen || ""],
+      [dressName, b.vestido.imagen || ""],
     );
     if (!dress) {
       const saved = await run(
         "INSERT INTO vestidos(nombre,categoria,color,talla,precio,imagen,disponible) VALUES(?,?,?,?,?,?,?)",
         [
-          b.vestido.nombre,
+          dressName,
           b.vestido.categoria || "Vestido",
           b.vestido.color || null,
           b.vestido.talla || b.vestido.size || null,
