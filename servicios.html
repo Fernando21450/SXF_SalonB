@@ -16,7 +16,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="estilos.css" />
+    <link rel="stylesheet" href="estilos.css?v=20261019-responsive-services-8" />
   </head>
   <body>
     <nav class="navbar navbar-expand-lg sticky-top" id="mainNav">
@@ -466,6 +466,42 @@
             card.classList.toggle("show-after"),
           ),
         );
+    </script>
+    <script>
+      (() => {
+        const grid = document.querySelector('#serviceGrid');
+        const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
+        const durationText = (minutes) => Number(minutes) >= 60 ? `${Math.floor(Number(minutes) / 60)} h${Number(minutes) % 60 ? ` ${Number(minutes) % 60} min` : ''}` : `${Number(minutes)} min`;
+        const iconFor = (name) => /corte|peinado|color/i.test(name) ? 'fa-scissors' : /maquillaje/i.test(name) ? 'fa-palette' : /manicure|pedicure/i.test(name) ? 'fa-hand-sparkles' : 'fa-spa';
+        const loadPublicServices = async () => {
+          try {
+            const response = await fetch('/api/servicios-publicos');
+            const services = await response.json();
+            if (!response.ok) throw new Error(services.error || 'No se pudieron cargar los servicios.');
+            if (!services.length) {
+              grid.innerHTML = '<div class="col-12"><p class="text-center py-5">No hay servicios activos para mostrar.</p></div>';
+              return;
+            }
+            grid.innerHTML = services.map((service) => {
+              const duration = Number(service.duracion_minutos) || 60;
+              return `<div class="col-md-6 col-lg-4 reveal"><article class="card service-card position-relative"><img src="${escapeHtml(service.imagen || '')}" alt="${escapeHtml(service.nombre)}" loading="lazy"><div class="card-body"><h3><i class="fa-solid ${iconFor(service.nombre)} text-gold"></i> ${escapeHtml(service.nombre)}</h3><p>${escapeHtml(service.descripcion || 'Servicio disponible en el salón.')}</p><div class="service-meta"><span><i class="fa-regular fa-clock"></i>${durationText(duration)}</span><span><i class="fa-solid fa-star"></i>Servicio del salón</span></div><span class="price">Desde Bs ${Number(service.precio || 0).toLocaleString('es-BO')}</span><button class="btn btn-outline-gold btn-sm d-block w-100 mt-3 service-info" data-service-id="${Number(service.id)}" data-service="${escapeHtml(service.nombre)}" data-time="${durationText(duration)}" data-description="${escapeHtml(service.descripcion || '')}">Más información</button></div></article></div>`;
+            }).join('');
+            grid.querySelectorAll('.service-info').forEach((button) => button.addEventListener('click', () => {
+              document.querySelector('#modalServiceTitle').textContent = button.dataset.service;
+              document.querySelector('#modalServiceDescription').textContent = button.dataset.description;
+              document.querySelector('#modalServiceTime').textContent = `Duración estimada: ${button.dataset.time}`;
+              document.querySelector('#serviceModal .modal-footer a').href = `reserva-servicio.html?servicio_id=${Number(button.dataset.serviceId)}`;
+              modal.show();
+            }));
+            const reveal = new IntersectionObserver((items) => items.forEach((item) => { if (item.isIntersecting) item.target.classList.add('is-visible'); }), { threshold: 0.12 });
+            grid.querySelectorAll('.reveal').forEach((item) => reveal.observe(item));
+          } catch (error) {
+            const message = escapeHtml(error.message);
+            grid.innerHTML = `<div class="col-12"><p class="text-center py-5 text-danger">${message}</p></div>`;
+          }
+        };
+        loadPublicServices();
+      })();
     </script>
   </body>
 </html>

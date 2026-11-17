@@ -16,7 +16,12 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="estilos.css" />
+    <link rel="stylesheet" href="estilos.css?v=20261019-responsive-services-8" />
+    <style>
+      #tryTime::-webkit-calendar-picker-indicator {
+        filter: brightness(0) invert(1);
+      }
+    </style>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg sticky-top">
@@ -129,6 +134,16 @@
                     />
                   </div>
                   <div class="col-12">
+                    <label class="form-label">Hora de prueba</label>
+                    <input id="tryTime" type="hidden" />
+                    <div id="tryTimeSlots" class="schedule-options" role="group" aria-label="Horarios de prueba disponibles"></div>
+                    <p id="tryTimeMessage" class="form-note mt-2" aria-live="polite">Selecciona el vestido y las fechas para consultar los horarios.</p>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Sucursal de prueba</label>
+                    <div id="dressBranch" class="price-summary">Boutique Lía Vincenzo</div>
+                  </div>
+                  <div class="col-12">
                     <hr class="my-3" />
                     <h3>Datos de la clienta</h3>
                   </div>
@@ -160,19 +175,6 @@
                       class="form-control"
                       required
                     />
-                  </div>
-                  <div class="col-md-6">
-                    <label class="form-label" for="dressBirthDate"
-                      >Fecha de nacimiento</label
-                    >
-                    <input
-                      id="dressBirthDate"
-                      type="date"
-                      class="form-control"
-                    />
-                    <small class="form-note"
-                      >Recibirás una promoción especial en tu cumpleaños.</small
-                    >
                   </div>
                   <div class="col-md-6">
                     <label class="form-label" for="comment"
@@ -254,9 +256,8 @@
     <script>
       (() => {
         const select = document.querySelector("#dress");
-        const requested = new URLSearchParams(window.location.search).get(
-          "vestido",
-        );
+        const requested = new URLSearchParams(window.location.search).get("vestido");
+        const requestedId = new URLSearchParams(window.location.search).get("vestido_id");
         const catalog = JSON.parse(
           localStorage.getItem("ilSaloneCatalog") || "[]",
         );
@@ -286,7 +287,7 @@
       })();
     </script>
     <script>
-      (() => {
+      (async () => {
         const oldForm = document.querySelector("#dressForm");
         const form = oldForm.cloneNode(true);
         oldForm.replaceWith(form);
@@ -295,69 +296,178 @@
         const sizeBox = document.querySelector("#dressSizeSummary");
         const warning = document.querySelector("#dressWarning");
         const confirmation = document.querySelector("#dressConfirmation");
-        const today = new Date().toISOString().slice(0, 10);
+        const confirmButton = form.querySelector('button[type="submit"]');
+        const tryTime = form.querySelector("#tryTime");
+        const tryDate = form.querySelector("#tryDate");
+        const eventDate = form.querySelector("#eventDate");
+        const timeSlots = form.querySelector("#tryTimeSlots");
+        const timeMessage = form.querySelector("#tryTimeMessage");
+        const todayParts = new Intl.DateTimeFormat("en-CA", { timeZone: "America/La_Paz", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
+        const today = `${todayParts.find((part) => part.type === "year").value}-${todayParts.find((part) => part.type === "month").value}-${todayParts.find((part) => part.type === "day").value}`;
         form.querySelector("#eventDate").min = today;
         form.querySelector("#tryDate").min = today;
-        const catalog = JSON.parse(
-          localStorage.getItem("ilSaloneCatalog") || "[]",
-        );
-        let dresses = catalog.filter(
-          (dress, index, list) =>
-            dress.name &&
-            list.findIndex((item) => item.name === dress.name) === index,
-        );
+        let dresses = [];
+        try {
+          const response = await fetch("/api/vestidos-publicos");
+          const catalog = await response.json();
+          if (!response.ok) throw new Error(catalog.error || "No se pudo cargar el catálogo.");
+          dresses = catalog.map((dress) => ({
+            id: dress.id,
+            name: dress.nombre,
+            category: dress.categoria,
+            color: dress.color,
+            size: dress.talla,
+            price: dress.precio,
+            image: dress.imagen,
+            available: Boolean(dress.disponible),
+          }));
+        } catch (error) {
+          warning.textContent = error.message;
+          confirmButton.disabled = true;
+          return;
+        }
         const requested = new URLSearchParams(location.search).get("vestido");
+        const requestedId = new URLSearchParams(location.search).get("vestido_id");
         if (dresses.length) {
           select.innerHTML = '<option value="">Selecciona un vestido</option>';
           dresses.forEach((dress) => {
             const option = new Option(
               `${dress.name} · ${dress.color} · Talla ${dress.size}`,
-              dress.name,
+              dress.id,
             );
-            option.disabled = !dress.available;
+            option.disabled = false;
             select.add(option);
           });
-          if (requested && dresses.some((dress) => dress.name === requested))
-            select.value = requested;
-        } else {
-          dresses = [...select.options]
-            .filter((option) => option.value)
-            .map((option) => {
-              const [name, color, size, price] = option.textContent.split(" · ");
-              return {
-                name,
-                color: color || "Por definir",
-                size: (size || "Por definir").replace("Talla ", ""),
-                price: (price || "0").replace("Bs ", ""),
-                available: !option.disabled,
-              };
-            });
-          select.innerHTML = '<option value="">Selecciona un vestido</option>';
-          dresses.forEach((dress) => {
-            const option = new Option(
-              `${dress.name} · ${dress.color} · Talla ${dress.size}`,
-              dress.name,
-            );
-            option.disabled = dress.available === false;
-            select.add(option);
-          });
-          if (requested && dresses.some((dress) => dress.name === requested)) {
-            select.value = requested;
-          }
+          if (requestedId && dresses.some((dress) => String(dress.id) === requestedId))
+            select.value = requestedId;
+          else if (requested && dresses.some((dress) => dress.name === requested))
+            select.value = String(dresses.find((dress) => dress.name === requested).id);
         }
         const selected = () =>
-          dresses.find((dress) => dress.name === select.value);
+          dresses.find((dress) => String(dress.id) === select.value);
         const updatePrice = () => {
           const dress = selected();
           priceBox.textContent = dress
-            ? `Bs ${dress.price} · ${dress.available ? "Disponible para prueba" : "No disponible"}`
+            ? `Bs ${dress.price} · Selecciona fecha para consultar disponibilidad`
             : "Selecciona un vestido para ver el precio.";
           sizeBox.textContent = dress
             ? `Talla ${dress.size}`
             : "Selecciona un vestido para ver su talla.";
         };
-        select.addEventListener("change", updatePrice);
+        let availabilitySequence = 0;
+        let lastAvailabilityMessage = "";
+        const buildAvailabilityParams = (dress, date, time) => new URLSearchParams({
+          tipo: "vestido",
+          vestido_id: dress.id,
+          vestido: dress.name,
+          imagen: dress.image || "",
+          fecha_evento: eventDate.value,
+          fecha_prueba: date,
+          hora: time,
+          sucursal: "Boutique Lía Vincenzo",
+        });
+        const loadTrialSlots = async () => {
+          const sequence = ++availabilitySequence;
+          const dress = selected();
+          const date = tryDate.value;
+          const event = eventDate.value;
+          tryTime.value = "";
+          timeSlots.replaceChildren();
+          confirmButton.disabled = true;
+          if (!dress || !date || !event || date >= event) {
+            timeMessage.textContent = date && event && date >= event
+              ? "La fecha de prueba debe ser anterior a la fecha del evento."
+              : "Selecciona el vestido y ambas fechas para consultar los horarios.";
+            warning.textContent = "";
+            return;
+          }
+          timeMessage.textContent = "Comprobando horarios disponibles…";
+          const [year, month, day] = date.split("-").map(Number);
+          const closing = new Date(Date.UTC(year, month - 1, day)).getUTCDay() === 0 ? 17 * 60 : 21 * 60;
+          const candidates = [];
+          for (let minute = 9 * 60; minute + 30 <= closing; minute += 30) {
+            candidates.push(`${String(Math.floor(minute / 60)).padStart(2, "0")}:${String(minute % 60).padStart(2, "0")}`);
+          }
+          try {
+            const results = await Promise.all(candidates.map(async (time) => {
+              const response = await fetch(`/api/disponibilidad?${buildAvailabilityParams(dress, date, time)}`);
+              const result = await response.json();
+              if (!response.ok) throw new Error(result.error || result.mensaje || "No se pudieron consultar los horarios.");
+              return { time, available: Boolean(result.disponible), message: result.mensaje };
+            }));
+            if (sequence !== availabilitySequence) return;
+            results.forEach(({ time, available }) => {
+              const button = document.createElement("button");
+              button.type = "button";
+              button.className = "schedule-chip";
+              button.textContent = time;
+              button.disabled = !available;
+              button.setAttribute("aria-label", `${time}, ${available ? "disponible" : "no disponible"}`);
+              if (!available) button.title = "Horario ocupado o fuera de atención";
+              button.addEventListener("click", () => {
+                tryTime.value = time;
+                timeSlots.querySelectorAll(".schedule-chip").forEach((slot) => slot.classList.toggle("is-selected", slot === button));
+                checkAvailability();
+              });
+              timeSlots.append(button);
+            });
+            const availableCount = results.filter((item) => item.available).length;
+            timeMessage.textContent = availableCount
+              ? `${availableCount} horarios disponibles. Los horarios ocupados aparecen deshabilitados.`
+              : "No hay horarios disponibles para la fecha de prueba seleccionada.";
+            warning.textContent = "";
+          } catch (error) {
+            if (sequence !== availabilitySequence) return;
+            timeMessage.textContent = "No se pudieron cargar los horarios.";
+            warning.textContent = error.message;
+          }
+        };
+        const checkAvailability = async () => {
+          const sequence = ++availabilitySequence;
+          const dress = selected();
+          const selectedEvent = eventDate.value;
+          const selectedTrial = tryDate.value;
+          const selectedTime = tryTime.value;
+          warning.textContent = "";
+          if (!dress || !selectedEvent || !selectedTrial || !selectedTime) {
+            updatePrice();
+            confirmButton.disabled = true;
+            return null;
+          }
+          priceBox.textContent = `Bs ${dress.price} · Comprobando disponibilidad…`;
+          confirmButton.disabled = true;
+          try {
+            const params = buildAvailabilityParams(dress, selectedTrial, selectedTime);
+            const response = await fetch(`/api/disponibilidad?${params}`);
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.error || "No se pudo consultar la disponibilidad.");
+            if (sequence !== availabilitySequence) return null;
+            lastAvailabilityMessage = result.mensaje || "";
+            priceBox.textContent = `Bs ${dress.price} · ${result.mensaje}`;
+            if (!result.disponible) warning.textContent = result.mensaje || "No hay disponibilidad para esa selección.";
+            confirmButton.disabled = !result.disponible;
+            if (!result.disponible && /horario|hora|prueba/i.test(result.mensaje || "")) {
+              const occupiedSlot = [...timeSlots.querySelectorAll(".schedule-chip")].find((slot) => slot.textContent === selectedTime);
+              if (occupiedSlot) occupiedSlot.disabled = true;
+              tryTime.value = "";
+              timeSlots.querySelectorAll(".schedule-chip").forEach((slot) => slot.classList.remove("is-selected"));
+              timeMessage.textContent = result.mensaje || "El horario acaba de ocuparse. Selecciona otro.";
+            }
+            return result.disponible;
+          } catch (error) {
+            if (sequence !== availabilitySequence) return null;
+            lastAvailabilityMessage = error.message;
+            priceBox.textContent = `Bs ${dress.price} · No se pudo comprobar disponibilidad`;
+            warning.textContent = error.message;
+            confirmButton.disabled = true;
+            return false;
+          }
+        };
+        select.addEventListener("change", () => { updatePrice(); loadTrialSlots(); });
+        eventDate.addEventListener("change", loadTrialSlots);
+        tryDate.addEventListener("change", loadTrialSlots);
         updatePrice();
+        loadTrialSlots();
         form.addEventListener("submit", async (event) => {
           event.preventDefault();
           warning.textContent = "";
@@ -367,18 +477,29 @@
             return;
           }
           const dress = selected();
-          if (!dress || dress.available === false) {
-            warning.textContent = "Selecciona un vestido disponible.";
+          if (!dress) {
+            warning.textContent = "Selecciona un vestido.";
+            return;
+          }
+          if (!tryTime.value) {
+            warning.textContent = "Selecciona un horario de prueba disponible.";
+            timeSlots.scrollIntoView({ behavior: "smooth", block: "center" });
             return;
           }
           if (
-            form.querySelector("#tryDate").value >=
-            form.querySelector("#eventDate").value
+            tryDate.value >= eventDate.value
           ) {
             warning.textContent = "La prueba debe realizarse antes del evento.";
             return;
           }
           try {
+            const latestAvailability = await checkAvailability();
+            if (latestAvailability !== true) {
+              warning.textContent = latestAvailability === false
+                ? lastAvailabilityMessage || "La disponibilidad cambió. Actualiza los horarios y vuelve a seleccionar."
+                : "No se pudo confirmar la disponibilidad del vestido.";
+              return;
+            }
             const response = await fetch("/api/solicitudes/vestido", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -386,10 +507,12 @@
                 nombre: form.querySelector("#client").value,
                 telefono: form.querySelector("#cell").value,
                 correo: form.querySelector("#mail").value,
-                fecha_nacimiento: form.querySelector("#dressBirthDate").value,
                 talla_habitual: dress.size,
-                fecha_evento: form.querySelector("#eventDate").value,
-                fecha_prueba: form.querySelector("#tryDate").value,
+                vestido_id: dress.id,
+                fecha_evento: eventDate.value,
+                fecha_prueba: tryDate.value,
+                hora: tryTime.value,
+                sucursal: "Boutique Lía Vincenzo",
                 comentario: form.querySelector("#comment").value,
                 vestido: dress,
               }),
@@ -399,7 +522,12 @@
               throw new Error(
                 result.error || "No se pudo registrar la reserva.",
               );
-            confirmation.innerHTML = `<h3 class="mb-2">¡Solicitud registrada!</h3><p>Vestido: <b>${dress.name}</b><br>Precio de referencia: <b>Bs ${dress.price}</b><br>Código: <b>${result.codigo}</b></p><small>El salón confirmará la disponibilidad y el horario de tu prueba.</small>`;
+            localStorage.setItem(
+              "ilSaloneAvailabilityDate",
+              eventDate.value,
+            );
+            localStorage.setItem("ilSaloneAvailabilityUpdated", String(Date.now()));
+            confirmation.innerHTML = `<h3 class="mb-2">¡Solicitud registrada!</h3><p>Vestido: <b>${dress.name}</b><br>Fecha del evento: <b>${eventDate.value.split("-").reverse().join("/")}</b><br>Fecha de prueba: <b>${tryDate.value.split("-").reverse().join("/")}</b><br>Hora de prueba: <b>${tryTime.value}</b><br>Sucursal: <b>Boutique Lía Vincenzo</b><br>Precio de referencia: <b>Bs ${dress.price}</b><br>Código: <b>${result.codigo}</b></p>`;
             confirmation.style.display = "block";
             confirmation.scrollIntoView({
               behavior: "smooth",
@@ -408,6 +536,7 @@
             form.reset();
             form.classList.remove("was-validated");
             updatePrice();
+            loadTrialSlots();
           } catch (error) {
             warning.textContent = error.message;
           }

@@ -1,0 +1,22 @@
+name: Procesar promociones de cumpleaños
+
+on:
+  schedule:
+    - cron: "0 * * * *"
+  workflow_dispatch:
+
+jobs:
+  birthday-promotions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --omit=dev
+      - name: Ejecutar promociones
+        run: npm run cumpleanos
+        env:
+          BIRTHDAY_SITE_URL: ${{ secrets.BIRTHDAY_SITE_URL }}
+          BIRTHDAY_CRON_SECRET: ${{ secrets.BIRTHDAY_CRON_SECRET }}

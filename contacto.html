@@ -16,7 +16,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="estilos.css" />
+    <link rel="stylesheet" href="estilos.css?v=20261019-responsive-services-8" />
   </head>
   <body>
     <nav class="navbar navbar-expand-lg sticky-top">
@@ -137,6 +137,20 @@
                       class="form-control"
                       id="contactEmail"
                       type="email"
+                      required
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label" for="contactPhone">Número de celular</label>
+                    <input
+                      class="form-control"
+                      id="contactPhone"
+                      type="tel"
+                      inputmode="tel"
+                      autocomplete="tel"
+                      maxlength="30"
+                      pattern="\+?[0-9\s().-]{7,30}"
+                      title="Usa entre 7 y 15 dígitos; puedes incluir +, espacios, paréntesis o guiones."
                       required
                     />
                   </div>
@@ -272,16 +286,48 @@
       );
       document
         .querySelector("#contactForm")
-        .addEventListener("submit", (event) => {
+        .addEventListener("submit", async (event) => {
           event.preventDefault();
           const form = event.currentTarget;
           if (!form.checkValidity()) {
             form.classList.add("was-validated");
             return;
           }
-          document.querySelector("#contactFeedback").textContent =
-            "¡Gracias! Tu consulta fue registrada. Te responderemos pronto.";
-          form.reset();
+          const button = form.querySelector('button[type="submit"]');
+          const feedback = document.querySelector("#contactFeedback");
+          button.disabled = true;
+          feedback.textContent = "Enviando consulta…";
+          try {
+            const response = await fetch(new URL("/api/contacto", window.location.origin), {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                nombre: document.querySelector("#contactName").value,
+                correo: document.querySelector("#contactEmail").value,
+                celular: document.querySelector("#contactPhone").value,
+                mensaje: document.querySelector("#contactMessage").value,
+              }),
+            });
+            const responseText = await response.text();
+            let result;
+            try {
+              result = JSON.parse(responseText);
+            } catch {
+              throw new Error(
+                `El servidor de ${window.location.origin} no devolvió JSON para /api/contacto (HTTP ${response.status}). Verifica que el backend del sitio esté actualizado.`,
+              );
+            }
+            if (!response.ok) throw new Error(result.error || "No se pudo enviar la consulta.");
+            feedback.textContent = "¡Gracias! Tu consulta fue registrada. Te responderemos pronto.";
+            form.reset();
+            form.classList.remove("was-validated");
+          } catch (error) {
+            feedback.textContent = error instanceof TypeError
+              ? "No se pudo conectar con el servidor. Inténtalo nuevamente más tarde."
+              : error.message;
+          } finally {
+            button.disabled = false;
+          }
         });
     </script>
   </body>

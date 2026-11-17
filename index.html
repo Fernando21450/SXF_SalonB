@@ -20,7 +20,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="estilos.css" />
+    <link rel="stylesheet" href="estilos.css?v=20261019-responsive-services-8" />
   </head>
   <body class="is-loading">
     <div class="site-loader" id="siteLoader">
@@ -429,7 +429,7 @@
               </a>
             </div>
           </div>
-          <div class="col-6 col-lg-2">
+          <div class="col-6 col-lg-3">
             <h5 class="text-white">Explora</h5>
             <a href="nosotros.html">Nosotros</a>
             <br />
@@ -437,24 +437,11 @@
             <br />
             <a href="catalogo.html">Vestidos</a>
           </div>
-          <div class="col-6 col-lg-3">
+          <div class="col-6 col-lg-5">
             <h5 class="text-white">Horarios</h5>
             <small>Lun. a sáb.: 09:00–21:00<br />Domingo: 09:00–17:00</small>
           </div>
-          <div class="col-lg-3">
-            <h5 class="text-white">Novedades</h5>
-            <form id="newsletterForm" class="d-flex gap-2">
-              <input
-                class="form-control newsletter-input"
-                type="email"
-                placeholder="Tu correo"
-                aria-label="Correo"
-                required
-              />
-              <button class="btn btn-gold" type="submit">OK</button>
-            </form>
-            <small id="newsletterMessage" class="d-block mt-2"> </small>
-          </div>
+
         </div>
         <hr />
         <small
@@ -525,14 +512,6 @@
         },
         { threshold: 0.5 },
       ).observe(statBox);
-      document
-        .querySelector("#newsletterForm")
-        .addEventListener("submit", (event) => {
-          event.preventDefault();
-          document.querySelector("#newsletterMessage").textContent =
-            "¡Gracias! Muy pronto recibirás nuestras novedades.";
-          event.currentTarget.reset();
-        });
       document
         .querySelectorAll('a[href="#"]')
         .forEach((link) =>
