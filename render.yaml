@@ -13,9 +13,8 @@ services:
     startCommand: npm start
     autoDeploy: true
     healthCheckPath: /
-    envVarGroups:
-      - name: birthday-cron-auth
     envVars:
+      - fromGroup: birthday-cron-auth
       - key: ADMIN_USER
         sync: false
       - key: ADMIN_PASSWORD
